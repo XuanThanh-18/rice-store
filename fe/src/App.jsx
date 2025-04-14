@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "./contexts/AuthContext";
-import Header from "./components/common/Header";
+import Header from "./components/common/header/Header";
 import Footer from "./components/common/Footer";
 import AppRoutes from "./Routes";
 import "react-toastify/dist/ReactToastify.css";

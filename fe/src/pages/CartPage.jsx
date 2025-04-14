@@ -1,38 +1,36 @@
-// src/pages/CartPage.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
   Box,
   Grid,
-  Button,
-  Paper,
   Divider,
   CircularProgress,
   Alert,
   Breadcrumbs,
   Link as MuiLink,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import CartItem from "../components/cart/CartItem";
-import CartSummary from "../components/cart/CartSummary";
+import { Link } from "react-router-dom";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { toast } from "react-toastify";
 import {
   getCart,
   updateCartItem,
   removeFromCart,
   clearCart,
 } from "../api/cartApi";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { toast } from "react-toastify";
+
+// Import refactored components
+import CartHeader from "../components/cart/CartHeader";
+import CartItemsList from "../components/cart/CartItemsList";
+import CartSummary from "../components/cart/CartSummary";
+import EmptyCart from "../components/cart/EmptyCart";
 
 const CartPage = () => {
   const [cart, setCart] = useState({ items: [], totalAmount: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [clearingCart, setClearingCart] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCart();
@@ -118,43 +116,12 @@ const CartPage = () => {
         <Typography color="text.primary">Shopping Cart</Typography>
       </Breadcrumbs>
 
-      {/* Page Title */}
-      <Box
-        sx={{
-          mb: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <ShoppingCartIcon sx={{ mr: 1, fontSize: 28 }} />
-          <Typography variant="h4" component="h1">
-            Shopping Cart
-          </Typography>
-          {cart.items.length > 0 && (
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              sx={{ ml: 2 }}
-            >
-              ({cart.items.length} {cart.items.length === 1 ? "item" : "items"})
-            </Typography>
-          )}
-        </Box>
-
-        {cart.items.length > 0 && (
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteOutlineIcon />}
-            onClick={handleClearCart}
-            disabled={clearingCart}
-          >
-            Clear Cart
-          </Button>
-        )}
-      </Box>
+      {/* Page Title with Cart Actions */}
+      <CartHeader
+        itemCount={cart.items.length}
+        onClearCart={handleClearCart}
+        clearingCart={clearingCart}
+      />
 
       {/* Error Message */}
       {error && (
@@ -164,74 +131,18 @@ const CartPage = () => {
       )}
 
       {/* Empty Cart */}
-      {cart.items.length === 0 && !loading && (
-        <Paper
-          sx={{
-            p: 4,
-            textAlign: "center",
-            borderRadius: 2,
-            mt: 4,
-            mb: 8,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Your cart is empty
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            Looks like you haven't added any products to your cart yet.
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/products"
-            size="large"
-            sx={{ mt: 2 }}
-          >
-            Start Shopping
-          </Button>
-        </Paper>
-      )}
+      {cart.items.length === 0 && !loading && <EmptyCart />}
 
       {/* Cart Contents */}
       {cart.items.length > 0 && (
         <Grid container spacing={4}>
           {/* Cart Items */}
           <Grid item xs={12} md={8}>
-            <Paper sx={{ p: 2, borderRadius: 2, mb: { xs: 4, md: 0 } }}>
-              {/* Cart Header */}
-              <Box sx={{ p: 2, display: { xs: "none", sm: "flex" } }}>
-                <Grid container>
-                  <Grid item sm={8} md={8}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Product
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={2} md={2} sx={{ textAlign: "center" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Quantity
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={2} md={2} sx={{ textAlign: "right" }}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      Subtotal
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-
-              <Divider sx={{ mb: 2 }} />
-
-              {/* Cart Items List */}
-              {cart.items.map((item) => (
-                <CartItem
-                  key={item.id}
-                  item={item}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemove={handleRemoveItem}
-                />
-              ))}
-            </Paper>
+            <CartItemsList
+              items={cart.items}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemove={handleRemoveItem}
+            />
           </Grid>
 
           {/* Cart Summary */}

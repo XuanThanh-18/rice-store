@@ -4,24 +4,23 @@ import {
   Typography,
   Box,
   Paper,
-  Grid,
   Stepper,
   Step,
   StepLabel,
   Alert,
-  Button,
   CircularProgress,
   Breadcrumbs,
   Link as MuiLink,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import CheckoutForm from "../components/checkout/CheckoutForm";
 import { getCart } from "../api/cartApi";
 import { createOrder } from "../api/orderApi";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import PaymentIcon from "@mui/icons-material/Payment";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+
+// Import refactored components
+import CheckoutForm from "../components/checkout/CheckoutForm";
+import OrderSuccessMessage from "../components/checkout/OrderSuccessMessage";
 
 const steps = ["Shopping Cart", "Checkout", "Order Confirmation"];
 
@@ -141,46 +140,17 @@ const CheckoutPage = () => {
       )}
 
       {/* Order Success Message */}
-      {activeStep === 2 && (
-        <Paper sx={{ p: 4, mb: 4, textAlign: "center" }}>
-          <CheckCircleOutlineIcon
-            sx={{ fontSize: 60, color: "success.main", mb: 2 }}
-          />
-          <Typography variant="h5" gutterBottom>
-            Thank you for your order!
-          </Typography>
-          <Typography variant="body1">
-            Your order has been placed successfully. Your order number is #
-            {orderId}.
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            You will be redirected to the order details page shortly...
-          </Typography>
-          <Box sx={{ mt: 3 }}>
-            <Button
-              variant="contained"
-              component={Link}
-              to={`/orders/${orderId}`}
-            >
-              View Order Details
-            </Button>
-          </Box>
-        </Paper>
-      )}
+      {activeStep === 2 && <OrderSuccessMessage orderId={orderId} />}
 
       {/* Checkout Form */}
       {activeStep === 1 && (
-        <Grid container spacing={4}>
-          <Grid item xs={12}>
-            <Paper sx={{ p: 3 }} elevation={3}>
-              <CheckoutForm
-                cart={cart}
-                onCheckout={handleCheckout}
-                loading={submitting}
-              />
-            </Paper>
-          </Grid>
-        </Grid>
+        <Paper sx={{ p: 3 }} elevation={3}>
+          <CheckoutForm
+            cart={cart}
+            onCheckout={handleCheckout}
+            loading={submitting}
+          />
+        </Paper>
       )}
     </Container>
   );

@@ -1,27 +1,28 @@
-// src/pages/ProductsPage.jsx
 import React, { useState, useEffect, useContext } from "react";
 import {
   Container,
-  Grid,
   Typography,
   Box,
   Pagination,
   CircularProgress,
   Alert,
-  Divider,
   Breadcrumbs,
   Link as MuiLink,
-  Paper,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ProductCard from "../components/products/ProductCard";
-import ProductFilter from "../components/products/ProductFilter";
 import { getProducts } from "../api/productApi";
 import { addToCart } from "../api/cartApi";
 import { toast } from "react-toastify";
 import { AuthContext } from "../contexts/AuthContext";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+
+// Import refactored components
+import ProductFilter from "../components/products/ProductFilter";
+import FilterTags from "../components/products/ProductsPage/FilterTags";
+import ProductGrid from "../components/products/ProductsPage/ProductGrid";
+import ProductResults from "../components/products/ProductsPage/ProductResults";
+import EmptyResults from "../components/products/ProductsPage/EmptyResults";
 
 const ProductsPage = () => {
   const location = useLocation();
@@ -149,11 +150,11 @@ const ProductsPage = () => {
     }
 
     if (filters.minPrice && filters.maxPrice) {
-      titles.push(`Price: $${filters.minPrice} - $${filters.maxPrice}`);
+      titles.push(`Price: ${filters.minPrice} - ${filters.maxPrice}`);
     } else if (filters.minPrice) {
-      titles.push(`Price: From $${filters.minPrice}`);
+      titles.push(`Price: From ${filters.minPrice}`);
     } else if (filters.maxPrice) {
-      titles.push(`Price: Up to $${filters.maxPrice}`);
+      titles.push(`Price: Up to ${filters.maxPrice}`);
     }
 
     return titles;
@@ -185,30 +186,7 @@ const ProductsPage = () => {
       <ProductFilter filters={filters} onFilterChange={handleFilterChange} />
 
       {/* Applied Filters Tags */}
-      {getFilterTitles().length > 0 && (
-        <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
-          <Typography variant="subtitle2" component="div" gutterBottom>
-            Applied Filters:
-          </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {getFilterTitles().map((title, index) => (
-              <Box
-                key={index}
-                sx={{
-                  bgcolor: "primary.light",
-                  color: "primary.contrastText",
-                  borderRadius: 1,
-                  px: 1,
-                  py: 0.5,
-                  fontSize: "0.875rem",
-                }}
-              >
-                {title}
-              </Box>
-            ))}
-          </Box>
-        </Paper>
-      )}
+      <FilterTags filterTitles={getFilterTitles()} />
 
       {/* Error Alert */}
       {error && (
@@ -226,34 +204,16 @@ const ProductsPage = () => {
 
       {/* Products Grid */}
       {!loading && products.length === 0 ? (
-        <Paper sx={{ p: 4, textAlign: "center", my: 6 }}>
-          <Typography variant="h6" gutterBottom>
-            No products found
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Try adjusting your search or filter criteria
-          </Typography>
-        </Paper>
+        <EmptyResults />
       ) : (
         <>
           {/* Results Count */}
           {!loading && (
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1" color="text.secondary">
-                Showing {products.length} of {totalElements} products
-              </Typography>
-              <Divider sx={{ mt: 1 }} />
-            </Box>
+            <ProductResults count={products.length} total={totalElements} />
           )}
 
           {/* Products Grid */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            {products.map((product) => (
-              <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                <ProductCard product={product} onAddToCart={handleAddToCart} />
-              </Grid>
-            ))}
-          </Grid>
+          <ProductGrid products={products} onAddToCart={handleAddToCart} />
 
           {/* Pagination */}
           {totalPages > 1 && (
