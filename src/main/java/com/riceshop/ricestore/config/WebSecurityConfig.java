@@ -1,5 +1,6 @@
 package com.riceshop.ricestore.config;
 
+import com.riceshop.ricestore.security.JwtAuthEntryPoint;
 import com.riceshop.ricestore.security.filter.JwtAuthenticationFilter;
 import com.riceshop.ricestore.security.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

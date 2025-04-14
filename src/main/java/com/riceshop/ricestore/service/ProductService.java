@@ -2,8 +2,8 @@ package com.riceshop.ricestore.service;
 
 import com.riceshop.ricestore.dto.ProductDto;
 import com.riceshop.ricestore.dto.request.ProductRequest;
+import com.riceshop.ricestore.entity.Product;
 import com.riceshop.ricestore.entity.User;
-import com.riceshop.ricestore.entity.enums.Product;
 import com.riceshop.ricestore.exception.ResourceNotFoundException;
 import com.riceshop.ricestore.repository.ProductRepository;
 import com.riceshop.ricestore.repository.UserRepository;

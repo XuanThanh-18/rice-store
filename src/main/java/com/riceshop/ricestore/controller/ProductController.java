@@ -2,6 +2,7 @@ package com.riceshop.ricestore.controller;
 
 import com.riceshop.ricestore.dto.ProductDto;
 import com.riceshop.ricestore.dto.request.ProductRequest;
+import com.riceshop.ricestore.dto.response.MessageResponse;
 import com.riceshop.ricestore.security.service.UserDetailsImpl;
 import com.riceshop.ricestore.service.ProductService;
 import jakarta.validation.Valid;

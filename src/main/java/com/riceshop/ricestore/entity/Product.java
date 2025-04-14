@@ -1,6 +1,5 @@
 package com.riceshop.ricestore.entity;
 
-import com.riceshop.ricestore.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,34 +8,41 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false)
-    private String password;
+    private BigDecimal price;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
 
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    private String origin;
+
+    @Column(name = "rice_type")
+    private String riceType;
+
+    private String weight;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -46,7 +52,12 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cart cart;
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
 
 }

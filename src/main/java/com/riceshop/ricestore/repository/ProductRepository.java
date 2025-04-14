@@ -1,6 +1,6 @@
 package com.riceshop.ricestore.repository;
 
-import com.riceshop.ricestore.entity.enums.Product;
+import com.riceshop.ricestore.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

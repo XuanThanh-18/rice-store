@@ -2,9 +2,14 @@ package com.riceshop.ricestore.service;
 
 import com.riceshop.ricestore.dto.request.LoginRequest;
 import com.riceshop.ricestore.dto.request.SignupRequest;
+import com.riceshop.ricestore.dto.request.TokenRefreshRequest;
 import com.riceshop.ricestore.dto.response.JwtResponse;
+import com.riceshop.ricestore.dto.response.TokenRefreshResponse;
+import com.riceshop.ricestore.entity.RefreshToken;
 import com.riceshop.ricestore.entity.User;
 import com.riceshop.ricestore.entity.enums.Role;
+import com.riceshop.ricestore.exception.BadRequestException;
+import com.riceshop.ricestore.exception.TokenRefreshException;
 import com.riceshop.ricestore.repository.UserRepository;
 import com.riceshop.ricestore.security.jwt.JwtUtils;
 import com.riceshop.ricestore.security.service.UserDetailsImpl;
@@ -31,6 +36,9 @@ public class AuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -44,8 +52,12 @@ public class AuthService {
                 .findFirst()
                 .orElse("");
 
+        // Create refresh token
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
         return JwtResponse.builder()
                 .token(jwt)
+                .refreshToken(refreshToken.getToken())
                 .id(userDetails.getId())
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
@@ -53,15 +65,32 @@ public class AuthService {
                 .build();
     }
 
+    public TokenRefreshResponse refreshToken(TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    return TokenRefreshResponse.builder()
+                            .accessToken(token)
+                            .refreshToken(requestRefreshToken)
+                            .build();
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                        "Refresh token is not in database!"));
+    }
+
     public void registerUser(SignupRequest signupRequest) {
         // Validate if username exists
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            throw new RuntimeException("Username is already taken!");
+            throw new BadRequestException("Username is already taken!");
         }
 
         // Validate if email exists
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new RuntimeException("Email is already in use!");
+            throw new BadRequestException("Email is already in use!");
         }
 
         // Create new user
@@ -73,5 +102,9 @@ public class AuthService {
         user.setRole(Role.ROLE_USER);
 
         userRepository.save(user);
+    }
+
+    public void logoutUser(Long userId) {
+        refreshTokenService.deleteByUserId(userId);
     }
 }
