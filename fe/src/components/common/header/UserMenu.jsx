@@ -53,7 +53,7 @@ const UserMenu = ({ user, isAdmin, onLogout }) => {
           onClick={handleMenuOpen}
           size="large"
           edge="end"
-          color="inherit"
+          color="#007848"
           aria-label="account of current user"
           aria-controls="menu-appbar"
           aria-haspopup="true"

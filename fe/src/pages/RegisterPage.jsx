@@ -48,7 +48,15 @@ const RegisterPage = () => {
       setRegisterError("");
       setSuccess(false);
 
-      const result = await register(values);
+      // Trim whitespace from all form values
+      const trimmedValues = {
+        username: values.username.trim(),
+        email: values.email.trim(),
+        password: values.password,
+        fullName: values.fullName.trim(),
+      };
+
+      const result = await register(trimmedValues);
 
       if (result.success) {
         setSuccess(true);

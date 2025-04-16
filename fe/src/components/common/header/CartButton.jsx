@@ -8,7 +8,7 @@ const CartButton = ({ itemCount }) => {
     <Tooltip title="Shopping Cart">
       <IconButton
         size="large"
-        color="inherit"
+        color="#007848"
         component={Link}
         to="/cart"
         sx={{ ml: 1 }}

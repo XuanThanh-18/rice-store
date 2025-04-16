@@ -129,7 +129,7 @@ const Header = () => {
   );
 
   return (
-    <AppBar position="sticky" sx={{ bgcolor: "primary.main", boxShadow: 3 }}>
+    <AppBar position="sticky" sx={{ bgcolor: "#ffffff", boxShadow: 3 }}>
       {isMobile ? (
         <>
           <Toolbar>

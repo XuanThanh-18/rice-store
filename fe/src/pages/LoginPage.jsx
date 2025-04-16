@@ -16,8 +16,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const loginValidationSchema = Yup.object({
-  username: Yup.string().required("Username is required"),
-  password: Yup.string().required("Password is required"),
+  username: Yup.string().required("Username không được để trống"),
+  password: Yup.string().required("Password không được để trống"),
 });
 
 const LoginPage = () => {
@@ -37,7 +37,12 @@ const LoginPage = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setLoginError("");
-      const result = await login(values);
+      // Trim whitespace from form values
+      const trimmedValues = {
+        username: values.username.trim(),
+        password: values.password,
+      };
+      const result = await login(trimmedValues);
 
       if (result.success) {
         navigate(from, { replace: true });

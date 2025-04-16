@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { alpha, Box, Button } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 
 const Navigation = ({ links }) => {
@@ -21,7 +21,7 @@ const Navigation = ({ links }) => {
           component={Link}
           to={link.path}
           sx={{
-            color: "white",
+            color: "#007848",
             display: "block",
             mx: 1,
             position: "relative",
@@ -35,7 +35,9 @@ const Navigation = ({ links }) => {
               left: 0,
               backgroundColor: "secondary.main",
               transition: "width 0.3s ease-in-out",
-              borderRadius: "2px",
+            },
+            "&:hover": {
+              color: alpha("#007848", 0.8),
             },
             "&:hover::after": {
               width: "100%",

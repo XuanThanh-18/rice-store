@@ -16,14 +16,14 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
-// import OrderDetailPage from "./pages/OrderDetailPage";
+import OrderDetailPage from "./pages/OrderDetailPage"; // This should be replaced with the actual OrderDetailPage
 import ProfilePage from "./pages/ProfilePage";
 
 // Admin pages
-// import AdminDashboard from "./pages/admin/AdminDashboard";
-// import ProductManagementPage from "./pages/admin/ProductManagementPage";
-// import OrderManagementPage from "./pages/admin/OrderManagementPage";
-// import UserManagementPage from "./pages/admin/UserManagementPage";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductManagementPage from "./pages/admin/ProductManagementPage";
+import OrderManagementPage from "./pages/admin/OrderManagementPage";
+import UserManagementPage from "./pages/admin/UserManagementPage";
 
 // Protected route wrapper component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
@@ -86,7 +86,11 @@ const AppRoutes = () => {
       />
       <Route
         path="/orders/:id"
-        element={<ProtectedRoute>{/* <OrderDetailPage /> */}</ProtectedRoute>}
+        element={
+          <ProtectedRoute>
+            <OrderDetailPage />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/profile"
@@ -102,7 +106,7 @@ const AppRoutes = () => {
         path="/admin/dashboard"
         element={
           <ProtectedRoute requireAdmin={true}>
-            {/* <AdminDashboard /> */}
+            <AdminDashboard />
           </ProtectedRoute>
         }
       />
@@ -110,7 +114,7 @@ const AppRoutes = () => {
         path="/admin/products"
         element={
           <ProtectedRoute requireAdmin={true}>
-            {/* <ProductManagementPage /> */}
+            <ProductManagementPage />
           </ProtectedRoute>
         }
       />
@@ -118,7 +122,7 @@ const AppRoutes = () => {
         path="/admin/orders"
         element={
           <ProtectedRoute requireAdmin={true}>
-            {/* <OrderManagementPage /> */}
+            <OrderManagementPage />
           </ProtectedRoute>
         }
       />
@@ -126,7 +130,7 @@ const AppRoutes = () => {
         path="/admin/users"
         element={
           <ProtectedRoute requireAdmin={true}>
-            {/* <UserManagementPage /> */}
+            <UserManagementPage />
           </ProtectedRoute>
         }
       />

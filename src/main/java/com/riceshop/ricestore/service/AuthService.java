@@ -15,6 +15,7 @@ import com.riceshop.ricestore.security.jwt.JwtUtils;
 import com.riceshop.ricestore.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,31 +39,54 @@ public class AuthService {
 
     @Autowired
     private RefreshTokenService refreshTokenService;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        try {
+            // Kiểm tra người dùng trước khi xác thực
+//            User user = userRepository.findByUsername(loginRequest.getUsername())
+//                    .orElse(null);
+//
+//            if (user == null) {
+//                System.out.println("DEBUG: User not found in database: " + loginRequest.getUsername());
+//                throw new BadCredentialsException("User not found");
+//            } else {
+//                System.out.println("DEBUG: User found: " + user.getUsername());
+//                System.out.println("DEBUG: Password format in DB: " + user.getPassword());
+//                // Kiểm tra password encoder
+//                boolean matches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+//                System.out.println("DEBUG: Password matches: " + matches);
+//            }
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String role = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("");
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String role = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .findFirst()
+                    .orElse("");
 
-        // Create refresh token
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            // Create refresh token
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return JwtResponse.builder()
-                .token(jwt)
-                .refreshToken(refreshToken.getToken())
-                .id(userDetails.getId())
-                .username(userDetails.getUsername())
-                .email(userDetails.getEmail())
-                .role(role)
-                .build();
+            return JwtResponse.builder()
+                    .token(jwt)
+                    .refreshToken(refreshToken.getToken())
+                    .id(userDetails.getId())
+                    .username(userDetails.getUsername())
+                    .email(userDetails.getEmail())
+                    .role(role)
+                    .build();
+        }catch(Exception e) {
+            e.printStackTrace();
+            // In hoặc log chi tiết lỗi
+            System.out.println("Error in authentication: " + e.getMessage());
+            throw e; // Chuyển tiếp ngoại lệ
+        }
     }
 
     public TokenRefreshResponse refreshToken(TokenRefreshRequest request) {

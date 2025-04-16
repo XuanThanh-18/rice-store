@@ -63,7 +63,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        bgcolor: "primary.dark",
+        bgcolor: "#005f3c",
         color: "white",
         py: 6,
         mt: "auto",
@@ -81,26 +81,27 @@ const Footer = () => {
             </Box>
 
             <Typography variant="body2" sx={{ mb: 2, opacity: 0.8 }}>
-              Premium quality rice from around the world, delivered to your
-              doorstep.
+              Gạo chất lượng cao từ khắp nơi trên thế giới, giao đến tận nhà bạn
             </Typography>
 
             <Box sx={{ mb: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <LocationOnIcon sx={{ mr: 1, fontSize: 20 }} />
                 <Typography variant="body2">
-                  123 Rice Street, Grain City, RC 12345
+                  Đội 2, Phúc Thắng, Nghĩa Hưng, Nam Định
                 </Typography>
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <PhoneIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2">(123) 456-7890</Typography>
+                <Typography variant="body2">0-358-748-253</Typography>
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <EmailIcon sx={{ mr: 1, fontSize: 20 }} />
-                <Typography variant="body2">info@riceshop.com</Typography>
+                <Typography variant="body2">
+                  xuanthanh88508@gmail.com
+                </Typography>
               </Box>
             </Box>
 
@@ -148,10 +149,10 @@ const Footer = () => {
           {/* Newsletter */}
           <Grid item xs={12} md={4}>
             <Typography variant="h6" gutterBottom>
-              Subscribe to Our Newsletter
+              Đăng ký nhận bản tin của chúng tôi
             </Typography>
             <Typography variant="body2" sx={{ mb: 2, opacity: 0.8 }}>
-              Get updates on new products and seasonal offers.
+              Nhận thông tin cập nhật về sản phẩm mới và ưu đãi theo mùa.
             </Typography>
             <Box sx={{ display: "flex" }}>
               <TextField
@@ -174,7 +175,7 @@ const Footer = () => {
                 }}
               />
               <Button variant="contained" color="secondary">
-                Subscribe
+                Đăng kí
               </Button>
             </Box>
           </Grid>
@@ -185,7 +186,7 @@ const Footer = () => {
         {/* Bottom Copyright */}
         <Box sx={{ textAlign: "center" }}>
           <Typography variant="body2" sx={{ opacity: 0.7 }}>
-            &copy; {new Date().getFullYear()} Rice Shop. All rights reserved.
+            &copy; {new Date().getFullYear()} Khanh Thanh Shop
           </Typography>
         </Box>
       </Container>

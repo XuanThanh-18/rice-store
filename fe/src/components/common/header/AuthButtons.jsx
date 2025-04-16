@@ -6,20 +6,32 @@ import { alpha } from "@mui/material/styles";
 const AuthButtons = () => {
   return (
     <Box sx={{ display: "flex" }}>
-      <Button color="inherit" component={Link} to="/login" sx={{ ml: 1 }}>
+      <Button
+        component={Link}
+        to="/login"
+        sx={{
+          ml: 1,
+          color: "#007848",
+          "&:hover": {
+            color: "#007848",
+            // backgroundColor: alpha("green", 0.1),
+          },
+        }}
+      >
         Login
       </Button>
       <Button
         variant="outlined"
-        color="inherit"
         component={Link}
         to="/register"
         sx={{
           ml: 1,
-          borderColor: "white",
+          borderColor: "green",
+          color: "#007848",
           "&:hover": {
-            borderColor: (theme) => alpha(theme.palette.common.white, 0.8),
-            backgroundColor: (theme) => alpha(theme.palette.common.white, 0.1),
+            borderColor: alpha("#007848", 0.8),
+            backgroundColor: alpha("#007848", 0.1),
+            color: "#007848",
           },
         }}
       >

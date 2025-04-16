@@ -21,7 +21,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 
 // Banner image placeholder - replace with your actual image in production
 const BANNER_IMAGE =
-  "https://images.unsplash.com/photo-1603638155239-99a788f32d7f?auto=format&fit=crop&w=1240";
+  "https://viecday365.com/pictures/news/2020/11/23/cbd1606126950.jpg";
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -71,7 +71,7 @@ const HomePage = () => {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
           }}
         />
 
@@ -91,7 +91,14 @@ const HomePage = () => {
               component={Link}
               to="/products"
               endIcon={<ArrowForwardIcon />}
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                backgroundColor: "yellowgreen",
+                "&:hover": {
+                  backgroundColor: "green",
+                  color: "white",
+                },
+              }}
             >
               Shop Now
             </Button>
@@ -110,6 +117,7 @@ const HomePage = () => {
 
         {loading ? (
           <Box display="flex" justifyContent="center" my={4}>
+            //hiển thị trạng thái "đang tải"
             <CircularProgress />
           </Box>
         ) : (
@@ -126,10 +134,7 @@ const HomePage = () => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={
-                      product.imageUrl ||
-                      `https://via.placeholder.com/300x200?text=${product.name}`
-                    }
+                    image={product.imageUrl}
                     alt={product.name}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>

@@ -1,7 +1,6 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 
 const Logo = () => {
   return (
@@ -14,14 +13,18 @@ const Logo = () => {
         display: "flex",
         alignItems: "center",
         fontWeight: 700,
-        color: "white",
+        color: "#007848",
         textDecoration: "none",
         "&:hover": {
           color: (theme) => theme.palette.common.white,
         },
       }}
     >
-      <RiceBowlIcon sx={{ mr: 1, fontSize: 32 }} />
+      <img
+        src="/MyLogo.jpg"
+        alt="Rice Store Logo"
+        style={{ height: "70px", border: "none" }}
+      />
       RICE SHOP
     </Typography>
   );
