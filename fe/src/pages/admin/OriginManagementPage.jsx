@@ -1,29 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Typography,
   Container,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  CircularProgress,
-  Chip,
-  Alert,
+  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  Breadcrumbs,
-  Link as MuiLink,
-  Tooltip,
+  TableRow,
+  TableCell,
+  Chip,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import {
   getAllOrigins,
   createOrigin,
@@ -32,15 +17,17 @@ import {
   activateOrigin,
 } from "../../api/originApi";
 import { toast } from "react-toastify";
-import AdminSidebar from "../../components/admin/AdminSidebar";
-import OriginForm from "../../components/admin/OriginForm";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import PublicIcon from "@mui/icons-material/Public";
-import RestoreIcon from "@mui/icons-material/Restore";
 import dayjs from "dayjs";
+
+// Import shared components
+import AdminLayout from "../../components/layout/AdminLayout";
+import PageHeader from "../../components/common/PageHeader";
+import DataTable from "../../components/common/DataTable";
+import StatusChip from "../../components/common/StatusChip";
+import ActionButtons from "../../components/common/ActionButtons";
+import ConfirmDialog from "../../components/common/ConfirmDialog";
+import OriginForm from "../../components/admin/OriginForm";
 
 const OriginManagementPage = () => {
   const [origins, setOrigins] = useState([]);
@@ -118,11 +105,6 @@ const OriginManagementPage = () => {
     }
   };
 
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-    setOriginToDelete(null);
-  };
-
   const handleActivate = async (origin) => {
     try {
       await activateOrigin(origin.id);
@@ -135,243 +117,120 @@ const OriginManagementPage = () => {
     }
   };
 
-  if (loading && origins.length === 0) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  // Table columns configuration
+  const columns = [
+    { key: "id", label: "ID" },
+    { key: "name", label: "Name" },
+    { key: "countryCode", label: "Country Code" },
+    { key: "description", label: "Description" },
+    { key: "createdAt", label: "Created At" },
+    { key: "status", label: "Status", align: "center" },
+    { key: "actions", label: "Actions", align: "center" },
+  ];
+
+  // Render a single row
+  const renderRow = (origin) => (
+    <TableRow
+      key={origin.id}
+      hover
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+      }}
+    >
+      <TableCell>{origin.id}</TableCell>
+      <TableCell>{origin.name}</TableCell>
+      <TableCell>
+        {origin.countryCode ? (
+          <Chip
+            label={origin.countryCode}
+            size="small"
+            color="primary"
+            variant="outlined"
+          />
+        ) : (
+          "N/A"
+        )}
+      </TableCell>
+      <TableCell>
+        {origin.description
+          ? origin.description.length > 100
+            ? origin.description.substring(0, 100) + "..."
+            : origin.description
+          : "N/A"}
+      </TableCell>
+      <TableCell>{dayjs(origin.createdAt).format("MMM D, YYYY")}</TableCell>
+      <TableCell align="center">
+        <StatusChip isActive={origin.isActive} />
+      </TableCell>
+      <TableCell align="center">
+        <ActionButtons
+          onEdit={() => handleEditOrigin(origin)}
+          onDelete={origin.isActive ? () => handleDeleteClick(origin) : null}
+          onActivate={!origin.isActive ? () => handleActivate(origin) : null}
+          isActive={origin.isActive}
+        />
+      </TableCell>
+    </TableRow>
+  );
 
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
-      <AdminSidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          bgcolor: "background.default",
-          overflowY: "auto",
-          marginLeft: { xs: 0, md: "240px" },
-          width: { xs: "100%", md: "calc(100% - 240px)" },
-        }}
-      >
-        <Container maxWidth="xl">
-          {/* Breadcrumbs */}
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" />}
-            aria-label="breadcrumb"
-            sx={{ mb: 3, mt: 2 }}
-          >
-            <MuiLink component={Link} to="/" color="inherit">
-              Home
-            </MuiLink>
-            <MuiLink component={Link} to="/admin/dashboard" color="inherit">
-              Admin
-            </MuiLink>
-            <Typography color="text.primary">Origins</Typography>
-          </Breadcrumbs>
+    <AdminLayout>
+      <Container maxWidth="xl">
+        {/* Page Header */}
+        <PageHeader
+          title="Origin Management"
+          icon={<PublicIcon />}
+          breadcrumbs={[
+            { text: "Admin", link: "/admin/dashboard" },
+            { text: "Origins" },
+          ]}
+          actionText="Add Origin"
+          onAction={handleAddOrigin}
+        />
 
-          {/* Page Title and Add Button */}
-          <Box
-            sx={{
-              mb: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <PublicIcon sx={{ mr: 1, fontSize: 28 }} />
-              <Typography variant="h4" component="h1">
-                Origin Management
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddOrigin}
-            >
-              Add Origin
-            </Button>
-          </Box>
+        {/* Error Message */}
+        {error && (
+          <Typography color="error" sx={{ mb: 3 }}>
+            {error}
+          </Typography>
+        )}
 
-          {/* Error Message */}
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
+        {/* Data Table */}
+        <DataTable
+          columns={columns}
+          data={origins}
+          renderRow={renderRow}
+          loading={loading}
+          emptyMessage="No origins found"
+        />
 
-          {/* Origins Table */}
-          <Paper
-            sx={{ width: "100%", overflow: "hidden", mb: 4, boxShadow: 2 }}
-          >
-            <TableContainer sx={{ maxHeight: "calc(100vh - 280px)" }}>
-              <Table stickyHeader aria-label="origins table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Country Code</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Created At</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell align="center">Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={7} align="center">
-                        <CircularProgress size={24} />
-                      </TableCell>
-                    </TableRow>
-                  ) : origins.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} align="center">
-                        No origins found
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    origins.map((origin) => (
-                      <TableRow
-                        key={origin.id}
-                        hover
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell>{origin.id}</TableCell>
-                        <TableCell>{origin.name}</TableCell>
-                        <TableCell>
-                          {origin.countryCode ? (
-                            <Chip
-                              label={origin.countryCode}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                          ) : (
-                            "N/A"
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {origin.description
-                            ? origin.description.length > 100
-                              ? origin.description.substring(0, 100) + "..."
-                              : origin.description
-                            : "N/A"}
-                        </TableCell>
-                        <TableCell>
-                          {dayjs(origin.createdAt).format("MMM D, YYYY")}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={origin.isActive ? "Active" : "Inactive"}
-                            color={origin.isActive ? "success" : "error"}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell align="center">
-                          <Box
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <Tooltip title="Edit Origin">
-                              <IconButton
-                                onClick={() => handleEditOrigin(origin)}
-                                size="small"
-                                color="primary"
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
+        {/* Add/Edit Form Dialog */}
+        <Dialog
+          open={openForm}
+          onClose={handleCloseForm}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            {editOrigin ? "Edit Origin" : "Add New Origin"}
+          </DialogTitle>
+          <DialogContent dividers>
+            <OriginForm origin={editOrigin} onSubmit={handleFormSubmit} />
+          </DialogContent>
+        </Dialog>
 
-                            {origin.isActive ? (
-                              <Tooltip title="Delete Origin">
-                                <IconButton
-                                  onClick={() => handleDeleteClick(origin)}
-                                  size="small"
-                                  color="error"
-                                  sx={{ ml: 1 }}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            ) : (
-                              <Tooltip title="Activate Origin">
-                                <IconButton
-                                  onClick={() => handleActivate(origin)}
-                                  size="small"
-                                  color="success"
-                                  sx={{ ml: 1 }}
-                                >
-                                  <RestoreIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-
-          {/* Add/Edit Origin Form Dialog */}
-          <Dialog
-            open={openForm}
-            onClose={handleCloseForm}
-            maxWidth="md"
-            fullWidth
-          >
-            <DialogTitle>
-              {editOrigin ? "Edit Origin" : "Add New Origin"}
-            </DialogTitle>
-            <DialogContent dividers>
-              <OriginForm origin={editOrigin} onSubmit={handleFormSubmit} />
-            </DialogContent>
-          </Dialog>
-
-          {/* Delete Confirmation Dialog */}
-          <Dialog
-            open={deleteDialogOpen}
-            onClose={handleDeleteCancel}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirm Origin Deletion"}
-            </DialogTitle>
-            <DialogContent>
-              <Typography>
-                Are you sure you want to delete the origin "
-                {originToDelete?.name}"? This action will deactivate the origin.
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDeleteCancel}>Cancel</Button>
-              <Button
-                onClick={handleDeleteConfirm}
-                variant="contained"
-                color="error"
-                autoFocus
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Container>
-      </Box>
-    </Box>
+        {/* Confirm Delete Dialog */}
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Confirm Origin Deletion"
+          content={`Are you sure you want to delete the origin "${originToDelete?.name}"? This action will deactivate the origin.`}
+          confirmText="Delete"
+          confirmColor="error"
+        />
+      </Container>
+    </AdminLayout>
   );
 };
 

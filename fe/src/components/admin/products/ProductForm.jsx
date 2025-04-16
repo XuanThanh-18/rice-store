@@ -1,5 +1,4 @@
-// fe/src/components/admin/ProductForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -8,17 +7,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,
   Box,
   CircularProgress,
   Alert,
   InputAdornment,
-  FormHelperText,
 } from "@mui/material";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { createProduct, updateProduct } from "../../api/productApi";
 import SaveIcon from "@mui/icons-material/Save";
+import { getRiceTypes, getOrigins } from "../../../api/productApi";
+import ProductImagePreview from "../ProductImagePreview";
 
 // Product validation schema
 const productValidationSchema = Yup.object({
@@ -43,8 +41,32 @@ const productValidationSchema = Yup.object({
   weight: Yup.string().required("Weight is required"),
 });
 
-const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
+const ProductForm = ({ product, onSubmit }) => {
   const [submitError, setSubmitError] = useState(null);
+  const [riceTypes, setRiceTypes] = useState([]);
+  const [origins, setOrigins] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load dropdown data
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      try {
+        setLoading(true);
+        const [riceTypesResponse, originsResponse] = await Promise.all([
+          getRiceTypes(),
+          getOrigins(),
+        ]);
+        setRiceTypes(riceTypesResponse.data || []);
+        setOrigins(originsResponse.data || []);
+      } catch (err) {
+        console.error("Error fetching dropdown data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDropdownData();
+  }, []);
 
   const initialValues = {
     name: product?.name || "",
@@ -60,16 +82,7 @@ const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitError(null);
-
-      if (product) {
-        // Update existing product
-        await updateProduct(product.id, values);
-      } else {
-        // Create new product
-        await createProduct(values);
-      }
-
-      onSubmit();
+      await onSubmit(values);
     } catch (err) {
       setSubmitError(
         err.response?.data?.message ||
@@ -80,6 +93,14 @@ const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Formik
@@ -160,7 +181,12 @@ const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
                   ))}
                 </Select>
                 {touched.riceType && errors.riceType && (
-                  <FormHelperText>{errors.riceType}</FormHelperText>
+                  <Box
+                    component="div"
+                    className="MuiFormHelperText-root Mui-error"
+                  >
+                    {errors.riceType}
+                  </Box>
                 )}
               </FormControl>
             </Grid>
@@ -185,7 +211,12 @@ const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
                   ))}
                 </Select>
                 {touched.origin && errors.origin && (
-                  <FormHelperText>{errors.origin}</FormHelperText>
+                  <Box
+                    component="div"
+                    className="MuiFormHelperText-root Mui-error"
+                  >
+                    {errors.origin}
+                  </Box>
                 )}
               </FormControl>
             </Grid>
@@ -227,30 +258,13 @@ const ProductForm = ({ product, onSubmit, riceTypes, origins }) => {
               />
             </Grid>
 
-            {values.imageUrl && (
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" gutterBottom>
-                  Image Preview
-                </Typography>
-                <Box
-                  component="img"
-                  src={values.imageUrl}
-                  alt="Product preview"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      "https://via.placeholder.com/200?text=Invalid+Image+URL";
-                  }}
-                  sx={{
-                    maxHeight: 200,
-                    maxWidth: "100%",
-                    objectFit: "contain",
-                    borderRadius: 1,
-                    border: "1px solid #eee",
-                  }}
-                />
-              </Grid>
-            )}
+            {/* Image Preview */}
+            <Grid item xs={12}>
+              <ProductImagePreview
+                imageUrl={values.imageUrl}
+                productName={values.name}
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>

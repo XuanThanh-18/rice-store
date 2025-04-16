@@ -1,30 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Typography,
   Container,
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  IconButton,
-  CircularProgress,
-  Chip,
-  Alert,
+  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  Breadcrumbs,
-  Link as MuiLink,
-  Tooltip,
+  TableRow,
+  TableCell,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import {
   getAllRiceTypes,
   createRiceType,
@@ -33,15 +16,17 @@ import {
   activateRiceType,
 } from "../../api/riceTypeApi";
 import { toast } from "react-toastify";
-import AdminSidebar from "../../components/admin/AdminSidebar";
-import RiceTypeForm from "../../components/admin/RiceTypeForm";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import GrainIcon from "@mui/icons-material/Grain";
-import RestoreIcon from "@mui/icons-material/Restore";
 import dayjs from "dayjs";
+
+// Import shared components
+import AdminLayout from "../../components/layout/AdminLayout";
+import PageHeader from "../../components/common/PageHeader";
+import DataTable from "../../components/common/DataTable";
+import StatusChip from "../../components/common/StatusChip";
+import ActionButtons from "../../components/common/ActionButtons";
+import ConfirmDialog from "../../components/common/ConfirmDialog";
+import RiceTypeForm from "../../components/admin/RiceTypeForm";
 
 const RiceTypeManagementPage = () => {
   const [riceTypes, setRiceTypes] = useState([]);
@@ -121,11 +106,6 @@ const RiceTypeManagementPage = () => {
     }
   };
 
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-    setRiceTypeToDelete(null);
-  };
-
   const handleActivate = async (riceType) => {
     try {
       await activateRiceType(riceType.id);
@@ -138,236 +118,113 @@ const RiceTypeManagementPage = () => {
     }
   };
 
-  if (loading && riceTypes.length === 0) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  // Table columns configuration
+  const columns = [
+    { key: "id", label: "ID" },
+    { key: "name", label: "Name" },
+    { key: "description", label: "Description" },
+    { key: "createdAt", label: "Created At" },
+    { key: "updatedAt", label: "Updated At" },
+    { key: "status", label: "Status", align: "center" },
+    { key: "actions", label: "Actions", align: "center" },
+  ];
+
+  // Render a single row
+  const renderRow = (riceType) => (
+    <TableRow
+      key={riceType.id}
+      hover
+      sx={{
+        "&:last-child td, &:last-child th": { border: 0 },
+      }}
+    >
+      <TableCell>{riceType.id}</TableCell>
+      <TableCell>{riceType.name}</TableCell>
+      <TableCell>
+        {riceType.description
+          ? riceType.description.length > 100
+            ? riceType.description.substring(0, 100) + "..."
+            : riceType.description
+          : "N/A"}
+      </TableCell>
+      <TableCell>{dayjs(riceType.createdAt).format("MMM D, YYYY")}</TableCell>
+      <TableCell>{dayjs(riceType.updatedAt).format("MMM D, YYYY")}</TableCell>
+      <TableCell align="center">
+        <StatusChip isActive={riceType.isActive} />
+      </TableCell>
+      <TableCell align="center">
+        <ActionButtons
+          onEdit={() => handleEditRiceType(riceType)}
+          onDelete={
+            riceType.isActive ? () => handleDeleteClick(riceType) : null
+          }
+          onActivate={
+            !riceType.isActive ? () => handleActivate(riceType) : null
+          }
+          isActive={riceType.isActive}
+        />
+      </TableCell>
+    </TableRow>
+  );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AdminSidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          bgcolor: "background.default",
-          minHeight: "100vh",
-        }}
-      >
-        <Container maxWidth="xl">
-          {/* Breadcrumbs */}
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" />}
-            aria-label="breadcrumb"
-            sx={{ mb: 3, mt: 2 }}
-          >
-            <MuiLink component={Link} to="/" color="inherit">
-              Home
-            </MuiLink>
-            <MuiLink component={Link} to="/admin/dashboard" color="inherit">
-              Admin
-            </MuiLink>
-            <Typography color="text.primary">Rice Types</Typography>
-          </Breadcrumbs>
+    <AdminLayout>
+      <Container maxWidth="xl">
+        {/* Page Header */}
+        <PageHeader
+          title="Rice Type Management"
+          icon={<GrainIcon />}
+          breadcrumbs={[
+            { text: "Admin", link: "/admin/dashboard" },
+            { text: "Rice Types" },
+          ]}
+          actionText="Add Rice Type"
+          onAction={handleAddRiceType}
+        />
 
-          {/* Page Title and Add Button */}
-          <Box
-            sx={{
-              mb: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <GrainIcon sx={{ mr: 1, fontSize: 28 }} />
-              <Typography variant="h4" component="h1">
-                Rice Type Management
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddRiceType}
-            >
-              Add Rice Type
-            </Button>
-          </Box>
+        {/* Error Message (could be extracted to an ErrorAlert component) */}
+        {error && (
+          <Typography color="error" sx={{ mb: 3 }}>
+            {error}
+          </Typography>
+        )}
 
-          {/* Error Message */}
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
+        {/* Data Table */}
+        <DataTable
+          columns={columns}
+          data={riceTypes}
+          renderRow={renderRow}
+          loading={loading}
+          emptyMessage="No rice types found"
+        />
 
-          {/* Rice Types Table */}
-          <Paper
-            sx={{ width: "100%", overflow: "hidden", mb: 4, boxShadow: 2 }}
-          >
-            <TableContainer sx={{ maxHeight: "calc(100vh - 280px)" }}>
-              <Table stickyHeader aria-label="rice types table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Created At</TableCell>
-                    <TableCell>Updated At</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell align="center">Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={7} align="center">
-                        <CircularProgress size={24} />
-                      </TableCell>
-                    </TableRow>
-                  ) : riceTypes.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={7} align="center">
-                        No rice types found
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    riceTypes.map((riceType) => (
-                      <TableRow
-                        key={riceType.id}
-                        hover
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell>{riceType.id}</TableCell>
-                        <TableCell>{riceType.name}</TableCell>
-                        <TableCell>
-                          {riceType.description
-                            ? riceType.description.length > 100
-                              ? riceType.description.substring(0, 100) + "..."
-                              : riceType.description
-                            : "N/A"}
-                        </TableCell>
-                        <TableCell>
-                          {dayjs(riceType.createdAt).format("MMM D, YYYY")}
-                        </TableCell>
-                        <TableCell>
-                          {dayjs(riceType.updatedAt).format("MMM D, YYYY")}
-                        </TableCell>
-                        <TableCell>
-                          <Chip
-                            label={riceType.isActive ? "Active" : "Inactive"}
-                            color={riceType.isActive ? "success" : "error"}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell align="center">
-                          <Box
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <Tooltip title="Edit Rice Type">
-                              <IconButton
-                                onClick={() => handleEditRiceType(riceType)}
-                                size="small"
-                                color="primary"
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
+        {/* Add/Edit Form Dialog */}
+        <Dialog
+          open={openForm}
+          onClose={handleCloseForm}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>
+            {editRiceType ? "Edit Rice Type" : "Add New Rice Type"}
+          </DialogTitle>
+          <DialogContent dividers>
+            <RiceTypeForm riceType={editRiceType} onSubmit={handleFormSubmit} />
+          </DialogContent>
+        </Dialog>
 
-                            {riceType.isActive ? (
-                              <Tooltip title="Delete Rice Type">
-                                <IconButton
-                                  onClick={() => handleDeleteClick(riceType)}
-                                  size="small"
-                                  color="error"
-                                  sx={{ ml: 1 }}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            ) : (
-                              <Tooltip title="Activate Rice Type">
-                                <IconButton
-                                  onClick={() => handleActivate(riceType)}
-                                  size="small"
-                                  color="success"
-                                  sx={{ ml: 1 }}
-                                >
-                                  <RestoreIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-
-          {/* Add/Edit Rice Type Form Dialog */}
-          <Dialog
-            open={openForm}
-            onClose={handleCloseForm}
-            maxWidth="md"
-            fullWidth
-          >
-            <DialogTitle>
-              {editRiceType ? "Edit Rice Type" : "Add New Rice Type"}
-            </DialogTitle>
-            <DialogContent dividers>
-              <RiceTypeForm
-                riceType={editRiceType}
-                onSubmit={handleFormSubmit}
-              />
-            </DialogContent>
-          </Dialog>
-
-          {/* Delete Confirmation Dialog */}
-          <Dialog
-            open={deleteDialogOpen}
-            onClose={handleDeleteCancel}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirm Rice Type Deletion"}
-            </DialogTitle>
-            <DialogContent>
-              <Typography>
-                Are you sure you want to delete the rice type "
-                {riceTypeToDelete?.name}"? This action will deactivate the rice
-                type.
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDeleteCancel}>Cancel</Button>
-              <Button
-                onClick={handleDeleteConfirm}
-                variant="contained"
-                color="error"
-                autoFocus
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Container>
-      </Box>
-    </Box>
+        {/* Confirm Delete Dialog */}
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          onClose={() => setDeleteDialogOpen(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Confirm Rice Type Deletion"
+          content={`Are you sure you want to delete the rice type "${riceTypeToDelete?.name}"? This action will deactivate the rice type.`}
+          confirmText="Delete"
+          confirmColor="error"
+        />
+      </Container>
+    </AdminLayout>
   );
 };
 
