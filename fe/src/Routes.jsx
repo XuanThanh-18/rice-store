@@ -24,6 +24,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProductManagementPage from "./pages/admin/ProductManagementPage";
 import OrderManagementPage from "./pages/admin/OrderManagementPage";
 import UserManagementPage from "./pages/admin/UserManagementPage";
+import RiceTypeManagementPage from "./pages/admin/RiceTypeManagementPage";
+import OriginManagementPage from "./pages/admin/OriginManagementPage";
 
 // Protected route wrapper component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
@@ -115,6 +117,22 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute requireAdmin={true}>
             <ProductManagementPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/rice-types"
+        element={
+          <ProtectedRoute requireAdmin={true}>
+            <RiceTypeManagementPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/origins"
+        element={
+          <ProtectedRoute requireAdmin={true}>
+            <OriginManagementPage />
           </ProtectedRoute>
         }
       />

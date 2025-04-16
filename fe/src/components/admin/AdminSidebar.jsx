@@ -1,4 +1,3 @@
-// fe/src/components/admin/AdminSidebar.jsx
 import React, { useState, useContext } from "react";
 import {
   Box,
@@ -24,6 +23,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MenuIcon from "@mui/icons-material/Menu";
 import RiceBowlIcon from "@mui/icons-material/RiceBowl";
+import GrainIcon from "@mui/icons-material/Grain";
+import PublicIcon from "@mui/icons-material/Public";
 
 const drawerWidth = 240;
 
@@ -50,6 +51,16 @@ const AdminSidebar = () => {
       path: "/admin/products",
     },
     {
+      text: "Rice Types",
+      icon: <GrainIcon />,
+      path: "/admin/rice-types",
+    },
+    {
+      text: "Origins",
+      icon: <PublicIcon />,
+      path: "/admin/origins",
+    },
+    {
       text: "Orders",
       icon: <ShoppingCartIcon />,
       path: "/admin/orders",
@@ -62,6 +73,101 @@ const AdminSidebar = () => {
   ];
 
   const isActivePath = (path) => location.pathname === path;
+
+  const drawer = (
+    <>
+      <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+        <RiceBowlIcon sx={{ mr: 1, fontSize: 30 }} />
+        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+          Rice Shop Admin
+        </Typography>
+      </Box>
+
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+
+      {/* Admin Info */}
+      <Box sx={{ p: 2 }}>
+        <Typography variant="subtitle1" noWrap>
+          {user?.fullName || user?.username}
+        </Typography>
+        <Typography variant="body2" color="rgba(255,255,255,0.7)" noWrap>
+          Administrator
+        </Typography>
+      </Box>
+
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+
+      <List sx={{ py: 1 }}>
+        {menuItems.map((item) => (
+          <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              component={Link}
+              to={item.path}
+              sx={{
+                minHeight: 48,
+                px: 2.5,
+                py: 1.5,
+                bgcolor: isActivePath(item.path)
+                  ? "rgba(255,255,255,0.2)"
+                  : "transparent",
+                "&:hover": {
+                  bgcolor: "rgba(255,255,255,0.1)",
+                },
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 2,
+                  color: isActivePath(item.path)
+                    ? "secondary.main"
+                    : "primary.contrastText",
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontWeight: isActivePath(item.path) ? "bold" : "normal",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+      <Box sx={{ flexGrow: 1 }} />
+
+      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+
+      <ListItem disablePadding sx={{ display: "block" }}>
+        <ListItemButton
+          onClick={logout}
+          sx={{
+            minHeight: 48,
+            px: 2.5,
+            py: 1.5,
+            color: theme.palette.error.light,
+            "&:hover": {
+              bgcolor: "rgba(255,255,255,0.1)",
+            },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: 2,
+              color: theme.palette.error.light,
+            }}
+          >
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItemButton>
+      </ListItem>
+    </>
+  );
 
   return (
     <>
@@ -90,112 +196,48 @@ const AdminSidebar = () => {
         </IconButton>
       )}
 
-      <Drawer
-        variant={isMobile ? "temporary" : "permanent"}
-        open={open}
-        onClose={isMobile ? handleDrawerToggle : undefined}
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
+      {/* Mobile drawer (temporary variant) */}
+      {isMobile ? (
+        <Drawer
+          variant="temporary"
+          open={open}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better mobile performance
+          }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              bgcolor: theme.palette.primary.dark,
+              color: theme.palette.primary.contrastText,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      ) : (
+        // Desktop drawer (permanent variant)
+        <Drawer
+          variant="permanent"
+          sx={{
             width: drawerWidth,
-            boxSizing: "border-box",
-            bgcolor: theme.palette.primary.dark,
-            color: theme.palette.primary.contrastText,
-          },
-        }}
-      >
-        <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-          <RiceBowlIcon sx={{ mr: 1, fontSize: 30 }} />
-          <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
-            Rice Shop Admin
-          </Typography>
-        </Box>
-
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-
-        {/* Admin Info */}
-        <Box sx={{ p: 2 }}>
-          <Typography variant="subtitle1" noWrap>
-            {user?.fullName || user?.username}
-          </Typography>
-          <Typography variant="body2" color="rgba(255,255,255,0.7)" noWrap>
-            Administrator
-          </Typography>
-        </Box>
-
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-
-        <List sx={{ py: 1 }}>
-          {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                component={Link}
-                to={item.path}
-                sx={{
-                  minHeight: 48,
-                  px: 2.5,
-                  py: 1.5,
-                  bgcolor: isActivePath(item.path)
-                    ? "rgba(255,255,255,0.2)"
-                    : "transparent",
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.1)",
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: 2,
-                    color: isActivePath(item.path)
-                      ? "secondary.main"
-                      : "primary.contrastText",
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontWeight: isActivePath(item.path) ? "bold" : "normal",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
-
-        <ListItem disablePadding sx={{ display: "block" }}>
-          <ListItemButton
-            onClick={logout}
-            sx={{
-              minHeight: 48,
-              px: 2.5,
-              py: 1.5,
-              color: theme.palette.error.light,
-              "&:hover": {
-                bgcolor: "rgba(255,255,255,0.1)",
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: 2,
-                color: theme.palette.error.light,
-              }}
-            >
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </Drawer>
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+              bgcolor: theme.palette.primary.dark,
+              color: theme.palette.primary.contrastText,
+              position: "relative", // Change from fixed to relative
+              height: "100%",
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      )}
     </>
   );
 };

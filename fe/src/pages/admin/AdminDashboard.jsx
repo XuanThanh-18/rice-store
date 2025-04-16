@@ -55,7 +55,9 @@ const AdminDashboard = () => {
         setLoading(true);
         setError(null);
         const response = await getDashboardData();
+        // Access the actual dashboard data inside the response
         setDashboardData(response.data);
+        console.log("dashborad data : ", response);
       } catch (err) {
         setError("Failed to load dashboard data. Please try again later.");
         console.error("Error fetching dashboard data:", err);
@@ -169,7 +171,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <ShoppingBagIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.totalOrders || 253}
+                    {dashboardData?.data?.totalOrders || 253}
                   </Typography>
                   <Typography variant="body2">Total Orders</Typography>
                 </CardContent>
@@ -187,7 +189,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <PeopleIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.totalCustomers || 120}
+                    {dashboardData?.data?.totalCustomers || 120}
                   </Typography>
                   <Typography variant="body2">Total Customers</Typography>
                 </CardContent>
@@ -205,7 +207,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <InventoryIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.totalProducts || 45}
+                    {dashboardData?.data?.totalProducts || 45}
                   </Typography>
                   <Typography variant="body2">Total Products</Typography>
                 </CardContent>
@@ -223,7 +225,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <LocalShippingIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {formatCurrency(dashboardData?.totalRevenue || 25650)}
+                    {formatCurrency(dashboardData?.data?.totalRevenue || 25650)}
                   </Typography>
                   <Typography variant="body2">Total Revenue</Typography>
                 </CardContent>
