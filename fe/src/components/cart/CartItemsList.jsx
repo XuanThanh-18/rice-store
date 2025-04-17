@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Box, Grid, Typography } from "@mui/material";
+import { Paper, Box, Grid, Typography, Divider } from "@mui/material";
 import CartItem from "./CartItem";
 
 const CartItemsList = ({ items, onUpdateQuantity, onRemove }) => {

@@ -15,7 +15,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import OrderStatusBadge from "./OrderStatusBadge";
 import dayjs from "dayjs";
 
-const OrderCard = ({ order, onCancelOrder }) => {
+const OrderCard = ({ order, onCancelOrder, cancelling }) => {
   const { id, orderDate, totalAmount, status, items } = order;
   const itemCount = items.length;
   const formattedDate = dayjs(orderDate).format("MMM DD, YYYY");
@@ -84,6 +84,7 @@ const OrderCard = ({ order, onCancelOrder }) => {
 
         {/* Actions */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
+          {/* Make sure this Link component correctly points to the order detail page */}
           <Button
             component={Link}
             to={`/orders/${id}`}
@@ -98,8 +99,9 @@ const OrderCard = ({ order, onCancelOrder }) => {
               variant="outlined"
               color="error"
               onClick={() => onCancelOrder(id)}
+              disabled={cancelling === id}
             >
-              Cancel Order
+              {cancelling === id ? "Cancelling..." : "Cancel Order"}
             </Button>
           )}
         </Box>

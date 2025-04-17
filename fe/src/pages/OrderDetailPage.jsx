@@ -23,6 +23,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import OrderItem from "../components/orders/OrderItem";
@@ -58,7 +59,7 @@ const getActiveStep = (status) => {
 
 const OrderDetailPage = () => {
   const { id } = useParams();
-  //   const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { isAdmin } = useContext(AuthContext);
 
   const [order, setOrder] = useState(null);
@@ -507,16 +508,13 @@ const OrderDetailPage = () => {
                   fullWidth
                   value={newStatus}
                   onChange={(e) => setNewStatus(e.target.value)}
-                  SelectProps={{
-                    native: true,
-                  }}
                   variant="outlined"
                   margin="dense"
                 >
                   {statusOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <MenuItem key={option.value} value={option.value}>
                       {option.label}
-                    </option>
+                    </MenuItem>
                   ))}
                 </TextField>
               </Box>

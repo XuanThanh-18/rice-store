@@ -1,9 +1,9 @@
 import React from "react";
 import { Typography, Box, Button, Paper } from "@mui/material";
-import { Link } from "react-router-dom";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const OrderSuccessMessage = ({ orderId }) => {
+const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
   return (
     <Paper sx={{ p: 4, mb: 4, textAlign: "center" }}>
       <CheckCircleOutlineIcon
@@ -14,13 +14,17 @@ const OrderSuccessMessage = ({ orderId }) => {
       </Typography>
       <Typography variant="body1">
         Your order has been placed successfully. Your order number is #{orderId}
-        .
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-        You will be redirected to the order details page shortly...
+        You can view your order details and track your shipment from the order
+        details page.
       </Typography>
       <Box sx={{ mt: 3 }}>
-        <Button variant="contained" component={Link} to={`/orders/${orderId}`}>
+        <Button
+          variant="contained"
+          startIcon={<VisibilityIcon />}
+          onClick={onViewDetails}
+        >
           View Order Details
         </Button>
       </Box>

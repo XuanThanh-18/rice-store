@@ -1,8 +1,14 @@
 import axios from "./axiosConfig";
 
 export const createOrder = async (orderData) => {
-  const response = await axios.post("/orders", orderData);
-  return response.data;
+  try {
+    const response = await axios.post("/orders", orderData);
+    // Make sure we're returning the response data in a consistent format
+    return response.data;
+  } catch (error) {
+    console.error("Error creating order:", error);
+    throw error;
+  }
 };
 
 export const getOrders = async (params) => {
@@ -11,8 +17,13 @@ export const getOrders = async (params) => {
 };
 
 export const getOrderById = async (id) => {
-  const response = await axios.get(`/orders/${id}`);
-  return response.data;
+  try {
+    const response = await axios.get(`/orders/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching order ${id}:`, error);
+    throw error;
+  }
 };
 
 export const cancelOrder = async (id) => {

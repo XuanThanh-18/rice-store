@@ -33,6 +33,7 @@ const ProductCard = ({ product, onAddToCart }) => {
         },
       }}
     >
+      {/* Make sure this Link component correctly points to the product detail page */}
       <CardActionArea component={Link} to={`/products/${id}`}>
         <CardMedia
           component="img"

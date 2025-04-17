@@ -1,98 +1,89 @@
-import React, { useState, useEffect } from "react";
+// fe/src/pages/ProductDetailPage.jsx
+import React, { useState, useEffect, useContext } from "react";
 import {
   Container,
   Typography,
   Box,
   Grid,
   Paper,
-  Divider,
   Button,
+  Divider,
+  Chip,
   CircularProgress,
   Alert,
+  TextField,
   Breadcrumbs,
   Link as MuiLink,
-  Stepper,
-  Step,
-  StepLabel,
   List,
   ListItem,
   ListItemText,
 } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import OrderItem from "../components/orders/OrderItem";
-import OrderStatusBadge from "../components/orders/OrderStatusBadge";
-import { getOrderById, cancelOrder } from "../api/orderApi";
+import { getProductById } from "../api/productApi";
+import { addToCart } from "../api/cartApi";
 import { formatCurrency } from "../utils/formatCurrency";
+import { AuthContext } from "../contexts/AuthContext";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import ReceiptIcon from "@mui/icons-material/Receipt";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import dayjs from "dayjs";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import { toast } from "react-toastify";
 
-// Order status steps for the stepper
-const orderSteps = ["Pending", "Processing", "Shipped", "Delivered"];
-
-// Function to get active step based on order status
-const getActiveStep = (status) => {
-  switch (status) {
-    case "PENDING":
-      return 0;
-    case "PROCESSING":
-      return 1;
-    case "SHIPPED":
-      return 2;
-    case "DELIVERED":
-      return 3;
-    default:
-      return -1; // For cancelled or refunded orders
-  }
-};
-
-const OrderDetailPage = () => {
+const ProductDetailPage = () => {
   const { id } = useParams();
-  //const navigate = useNavigate();
+  const { isAuthenticated } = useContext(AuthContext);
 
-  const [order, setOrder] = useState(null);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cancelling, setCancelling] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const fetchProductDetails = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await getOrderById(id);
-        setOrder(response.data);
+        const fetchedProduct = await getProductById(id);
+        setProduct(fetchedProduct);
       } catch (err) {
-        setError("Failed to load order details. Please try again later.");
-        console.error("Error fetching order details:", err);
+        setError("Failed to load product details. Please try again later.");
+        console.error("Error fetching product details:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrderDetails();
+    if (id) {
+      fetchProductDetails();
+    }
   }, [id]);
 
-  const handleCancelOrder = async () => {
-    if (!window.confirm("Are you sure you want to cancel this order?")) {
+  const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value > 0) {
+      setQuantity(Math.min(value, product?.stockQuantity || 99));
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.info("Please log in to add items to your cart");
       return;
     }
 
     try {
-      setCancelling(true);
-      await cancelOrder(id);
-
-      // Update order status in state
-      setOrder((prev) => ({ ...prev, status: "CANCELLED" }));
-
-      toast.success("Order cancelled successfully");
+      setAddingToCart(true);
+      await addToCart(product.id, quantity);
+      toast.success(`${product.name} added to cart successfully`);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to cancel order");
+      toast.error(
+        err.response?.data?.message || "Failed to add product to cart"
+      );
     } finally {
-      setCancelling(false);
+      setAddingToCart(false);
     }
   };
 
@@ -120,56 +111,46 @@ const OrderDetailPage = () => {
         </Alert>
         <Button
           component={Link}
-          to="/orders"
+          to="/products"
           startIcon={<ArrowBackIcon />}
           variant="outlined"
         >
-          Back to Orders
+          Back to Products
         </Button>
       </Container>
     );
   }
 
-  if (!order) {
+  if (!product) {
     return (
       <Container sx={{ py: 8 }}>
         <Alert severity="info" sx={{ my: 4 }}>
-          Order not found
+          Product not found
         </Alert>
         <Button
           component={Link}
-          to="/orders"
+          to="/products"
           startIcon={<ArrowBackIcon />}
           variant="outlined"
         >
-          Back to Orders
+          Back to Products
         </Button>
       </Container>
     );
   }
 
   const {
-    orderDate,
-    status,
-    shippingAddress,
-    billingAddress,
-    phoneNumber,
-    paymentMethod,
-    paymentStatus,
-    trackingNumber,
-    deliveryDate,
-    totalAmount,
-    items,
-  } = order;
+    name,
+    price,
+    description,
+    stockQuantity,
+    imageUrl,
+    origin,
+    riceType,
+    weight,
+  } = product;
 
-  const formattedOrderDate = dayjs(orderDate).format("MMMM D, YYYY h:mm A");
-  const formattedDeliveryDate = deliveryDate
-    ? dayjs(deliveryDate).format("MMMM D, YYYY")
-    : "Not yet delivered";
-
-  const activeStep = getActiveStep(status);
-  const isActiveOrder = status !== "CANCELLED" && status !== "REFUNDED";
-  const canCancel = status === "PENDING" || status === "PROCESSING";
+  const isOutOfStock = stockQuantity <= 0;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -182,219 +163,193 @@ const OrderDetailPage = () => {
         <MuiLink component={Link} to="/" color="inherit">
           Home
         </MuiLink>
-        <MuiLink component={Link} to="/orders" color="inherit">
-          My Orders
+        <MuiLink component={Link} to="/products" color="inherit">
+          Products
         </MuiLink>
-        <Typography color="text.primary">Order #{id}</Typography>
+        <Typography color="text.primary">{name}</Typography>
       </Breadcrumbs>
 
-      {/* Page Title */}
-      <Box
-        sx={{
-          mb: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <ReceiptIcon sx={{ mr: 1, fontSize: 28 }} />
-          <Typography variant="h4" component="h1">
-            Order Details
-          </Typography>
-        </Box>
-
-        <Button
-          component={Link}
-          to="/orders"
-          startIcon={<ArrowBackIcon />}
-          variant="outlined"
-        >
-          Back to Orders
-        </Button>
-      </Box>
-
-      {/* Order Header */}
-      <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Typography variant="h6" gutterBottom>
-              Order #{id}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Placed on {formattedOrderDate}
-            </Typography>
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            md={4}
+      <Grid container spacing={4}>
+        {/* Product Image */}
+        <Grid item xs={12} md={6}>
+          <Paper
+            elevation={2}
             sx={{
+              p: 2,
+              height: "100%",
               display: "flex",
-              justifyContent: { md: "flex-end" },
               alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Order Status
-              </Typography>
-              <OrderStatusBadge status={status} />
-            </Box>
-          </Grid>
+            <Box
+              component="img"
+              src={
+                imageUrl || `https://via.placeholder.com/600x400?text=${name}`
+              }
+              alt={name}
+              sx={{
+                width: "100%",
+                height: "auto",
+                maxHeight: 400,
+                objectFit: "contain",
+              }}
+            />
+          </Paper>
         </Grid>
 
-        {/* Order Progress Stepper */}
-        {isActiveOrder && (
-          <Box sx={{ mt: 4 }}>
-            <Stepper activeStep={activeStep} alternativeLabel>
-              {orderSteps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        )}
+        {/* Product Details */}
+        <Grid item xs={12} md={6}>
+          <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              {name}
+            </Typography>
 
-        {/* Cancel Order Button */}
-        {canCancel && (
-          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, my: 2 }}>
+              {riceType && (
+                <Chip
+                  icon={<RiceBowlIcon />}
+                  label={riceType}
+                  color="primary"
+                  variant="outlined"
+                />
+              )}
+              {origin && (
+                <Chip label={`Origin: ${origin}`} variant="outlined" />
+              )}
+              {weight && <Chip label={weight} variant="outlined" />}
+            </Box>
+
+            <Typography variant="h5" color="primary" sx={{ my: 2 }}>
+              {formatCurrency(price)}
+            </Typography>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Typography
+              variant="body1"
+              color={isOutOfStock ? "error.main" : "success.main"}
+              sx={{ fontWeight: "medium", mb: 2 }}
+            >
+              {isOutOfStock
+                ? "Out of Stock"
+                : `In Stock: ${stockQuantity} units`}
+            </Typography>
+
+            {!isOutOfStock && (
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Typography variant="body1" sx={{ mr: 2 }}>
+                  Quantity:
+                </Typography>
+                <TextField
+                  type="number"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  inputProps={{ min: 1, max: stockQuantity }}
+                  sx={{ width: "80px" }}
+                  size="small"
+                />
+              </Box>
+            )}
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              startIcon={<AddShoppingCartIcon />}
+              onClick={handleAddToCart}
+              disabled={isOutOfStock || addingToCart}
+              sx={{ py: 1.5, mb: 2 }}
+            >
+              {addingToCart ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Add to Cart"
+              )}
+            </Button>
+
             <Button
               variant="outlined"
-              color="error"
-              onClick={handleCancelOrder}
-              disabled={cancelling}
+              component={Link}
+              to="/products"
+              startIcon={<ArrowBackIcon />}
+              sx={{ mt: 1 }}
+              fullWidth
             >
-              {cancelling ? <CircularProgress size={24} /> : "Cancel Order"}
+              Back to Products
             </Button>
-          </Box>
-        )}
-      </Paper>
-
-      {/* Order Items */}
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Order Items
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-
-            {items.map((item) => (
-              <OrderItem key={item.id} item={item} />
-            ))}
-
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Typography variant="h6">
-                Total: {formatCurrency(totalAmount)}
-              </Typography>
-            </Box>
           </Paper>
-
-          {/* Tracking Information */}
-          {status === "SHIPPED" && trackingNumber && (
-            <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Tracking Information
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-
-              <Typography variant="body1" gutterBottom>
-                Tracking Number: {trackingNumber}
-              </Typography>
-
-              <Button
-                variant="outlined"
-                color="primary"
-                sx={{ mt: 2 }}
-                // In a real app, link to tracking page
-                onClick={() =>
-                  window.open(
-                    `https://example.com/track?number=${trackingNumber}`,
-                    "_blank"
-                  )
-                }
-              >
-                Track Shipment
-              </Button>
-            </Paper>
-          )}
         </Grid>
 
-        {/* Order Summary */}
-        <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+        {/* Product Description */}
+        <Grid item xs={12}>
+          <Paper elevation={2} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
-              Order Summary
+              Product Description
             </Typography>
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ mb: 2 }} />
+            <Typography variant="body1" paragraph>
+              {description || "No description available for this product."}
+            </Typography>
+          </Paper>
+        </Grid>
 
+        {/* Additional Information */}
+        <Grid item xs={12} md={6}>
+          <Paper elevation={2} sx={{ p: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Additional Information
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
             <List disablePadding>
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Order Date" />
-                <Typography variant="body2">{formattedOrderDate}</Typography>
+                <ListItemText primary="Type" />
+                <Typography variant="body2">{riceType || "N/A"}</Typography>
               </ListItem>
-
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Payment Method" />
-                <Typography variant="body2">{paymentMethod}</Typography>
+                <ListItemText primary="Origin" />
+                <Typography variant="body2">{origin || "N/A"}</Typography>
               </ListItem>
-
               <ListItem sx={{ py: 1, px: 0 }}>
-                <ListItemText primary="Payment Status" />
-                <Typography
-                  variant="body2"
-                  color={paymentStatus ? "success.main" : "error"}
-                >
-                  {paymentStatus ? "Paid" : "Unpaid"}
-                </Typography>
+                <ListItemText primary="Weight" />
+                <Typography variant="body2">{weight || "N/A"}</Typography>
               </ListItem>
-
-              {status === "DELIVERED" && (
-                <ListItem sx={{ py: 1, px: 0 }}>
-                  <ListItemText primary="Delivery Date" />
-                  <Typography variant="body2">
-                    {formattedDeliveryDate}
-                  </Typography>
-                </ListItem>
-              )}
+              <ListItem sx={{ py: 1, px: 0 }}>
+                <ListItemText primary="Stock" />
+                <Typography variant="body2">{stockQuantity} units</Typography>
+              </ListItem>
             </List>
+          </Paper>
+        </Grid>
 
-            <Divider sx={{ my: 2 }} />
-
+        {/* Shipping Information */}
+        <Grid item xs={12} md={6}>
+          <Paper elevation={2} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               Shipping Information
             </Typography>
-
-            <Typography variant="body2" paragraph>
-              {shippingAddress.split("\n").map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
-            </Typography>
-
-            <Typography variant="body2" paragraph>
-              Phone: {phoneNumber}
-            </Typography>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Typography variant="h6" gutterBottom>
-              Billing Information
-            </Typography>
-
-            <Typography variant="body2" paragraph>
-              {billingAddress.split("\n").map((line, i) => (
-                <React.Fragment key={i}>
-                  {line}
-                  <br />
-                </React.Fragment>
-              ))}
-            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <List disablePadding>
+              <ListItem sx={{ py: 1, px: 0 }}>
+                <ListItemText primary="Delivery" />
+                <Typography variant="body2">2-5 business days</Typography>
+              </ListItem>
+              <ListItem sx={{ py: 1, px: 0 }}>
+                <ListItemText primary="Shipping Fee" />
+                <Typography variant="body2">
+                  Free shipping on orders over $50
+                </Typography>
+              </ListItem>
+              <ListItem sx={{ py: 1, px: 0 }}>
+                <ListItemText primary="Returns" />
+                <Typography variant="body2">30-day return policy</Typography>
+              </ListItem>
+              <ListItem sx={{ py: 1, px: 0 }}>
+                <ListItemText primary="Packaging" />
+                <Typography variant="body2">Eco-friendly packaging</Typography>
+              </ListItem>
+            </List>
           </Paper>
         </Grid>
       </Grid>
@@ -402,4 +357,4 @@ const OrderDetailPage = () => {
   );
 };
 
-export default OrderDetailPage;
+export default ProductDetailPage;

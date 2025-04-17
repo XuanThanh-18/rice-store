@@ -1,3 +1,4 @@
+// fe/src/pages/OrdersPage.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -51,8 +52,18 @@ const OrdersPage = () => {
       }
 
       const response = await getOrders(params);
-      setOrders(response.data.content || []);
-      setTotalPages(response.data.totalPages || 0);
+
+      // Check if response data has the expected structure
+      if (response?.data?.content) {
+        setOrders(response.data.content);
+        setTotalPages(response.data.totalPages || 0);
+      } else {
+        // Handle unexpected response format
+        console.error("Unexpected response format:", response);
+        setOrders([]);
+        setTotalPages(0);
+        setError("Failed to parse orders data. Please contact support.");
+      }
     } catch (err) {
       setError("Failed to load orders. Please try again later.");
       console.error("Error fetching orders:", err);
@@ -72,6 +83,10 @@ const OrdersPage = () => {
   };
 
   const handleCancelOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) {
+      return;
+    }
+
     try {
       setCancelling(orderId);
       await cancelOrder(orderId);

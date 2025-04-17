@@ -1,4 +1,4 @@
-// src/Routes.jsx
+// fe/src/Routes.jsx
 import React, { useContext } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./contexts/AuthContext";
@@ -16,7 +16,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
-import OrderDetailPage from "./pages/OrderDetailPage"; // This should be replaced with the actual OrderDetailPage
+import OrderDetailPage from "./pages/OrderDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 
 // Admin pages

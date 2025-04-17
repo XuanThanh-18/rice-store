@@ -1,3 +1,4 @@
+// fe/src/pages/CheckoutPage.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -17,6 +18,7 @@ import { getCart } from "../api/cartApi";
 import { createOrder } from "../api/orderApi";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { toast } from "react-toastify";
 
 // Import refactored components
 import CheckoutForm from "../components/checkout/CheckoutForm";
@@ -63,22 +65,52 @@ const CheckoutPage = () => {
       setSubmitting(true);
       setError(null);
 
-      const orderData = await createOrder(checkoutData);
-      setOrderId(orderData.id);
-      setActiveStep(2);
+      const response = await createOrder(checkoutData);
 
-      // Redirect to order confirmation after a delay
-      setTimeout(() => {
-        navigate(`/orders/${orderData.id}`);
-      }, 3000);
+      // Ensure we get a valid order ID from the response
+      if (response && response.data && response.data.id) {
+        const newOrderId = response.data.id;
+        setOrderId(newOrderId);
+        setActiveStep(2);
+
+        // Store the order ID in session storage as a backup
+        sessionStorage.setItem("lastOrderId", newOrderId);
+
+        // Log success for debugging
+        console.log("Order created successfully:", response.data);
+
+        // Don't redirect automatically - let the user click through
+        // This gives them time to see the success message
+        toast.success("Your order has been placed successfully!");
+      } else {
+        // Handle unexpected response format
+        console.error("Invalid order response format:", response);
+        setError("Failed to create order: Invalid server response");
+      }
     } catch (err) {
+      console.error("Error creating order:", err);
       setError(
         err.response?.data?.message ||
           "Failed to create order. Please try again."
       );
-      console.error("Error creating order:", err);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleViewOrderDetails = () => {
+    if (orderId) {
+      navigate(`/orders/${orderId}`);
+    } else {
+      const backupOrderId = sessionStorage.getItem("lastOrderId");
+      if (backupOrderId) {
+        navigate(`/orders/${backupOrderId}`);
+      } else {
+        navigate("/orders");
+        toast.warning(
+          "Could not find order details. Redirecting to orders page."
+        );
+      }
     }
   };
 
@@ -140,7 +172,12 @@ const CheckoutPage = () => {
       )}
 
       {/* Order Success Message */}
-      {activeStep === 2 && <OrderSuccessMessage orderId={orderId} />}
+      {activeStep === 2 && (
+        <OrderSuccessMessage
+          orderId={orderId}
+          onViewDetails={handleViewOrderDetails}
+        />
+      )}
 
       {/* Checkout Form */}
       {activeStep === 1 && (
