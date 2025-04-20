@@ -1,10 +1,10 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36" version="26.2.13">
   <diagram name="Page-1" id="kZpzCHdwkky1866xyNUm">
-    <mxGraphModel dx="1430" dy="580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1130" dy="580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="fuhSDwGU7RZI67mXa5Rf-1" value="Status Cart" style="swimlane;whiteSpace=wrap" vertex="1" parent="1">
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-1" value="Status Cart" style="swimlane;whiteSpace=wrap;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="280" y="128" width="785.5" height="570" as="geometry" />
         </mxCell>
         <mxCell id="fuhSDwGU7RZI67mXa5Rf-2" value="" style="ellipse;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="fuhSDwGU7RZI67mXa5Rf-1">
