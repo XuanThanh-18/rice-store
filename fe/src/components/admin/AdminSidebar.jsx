@@ -1,4 +1,7 @@
+// Modified AdminSidebar.jsx to fix positioning
 import React, { useState, useContext } from "react";
+// Add this to the imports
+import { alpha } from "@mui/material/styles";
 import {
   Box,
   Drawer,
@@ -12,6 +15,7 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  Avatar,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -25,6 +29,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import RiceBowlIcon from "@mui/icons-material/RiceBowl";
 import GrainIcon from "@mui/icons-material/Grain";
 import PublicIcon from "@mui/icons-material/Public";
+import HomeIcon from "@mui/icons-material/Home";
 
 const drawerWidth = 240;
 
@@ -70,32 +75,65 @@ const AdminSidebar = () => {
       icon: <PeopleIcon />,
       path: "/admin/users",
     },
+    {
+      text: "Back to Shop",
+      icon: <HomeIcon />,
+      path: "/",
+    },
   ];
 
   const isActivePath = (path) => location.pathname === path;
 
   const drawer = (
     <>
-      <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          alignItems: "center",
+          bgcolor: theme.palette.primary.main,
+          color: "white",
+        }}
+      >
         <RiceBowlIcon sx={{ mr: 1, fontSize: 30 }} />
         <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
           Rice Shop Admin
         </Typography>
+        {isMobile && (
+          <IconButton
+            onClick={handleDrawerToggle}
+            sx={{ ml: "auto", color: "white" }}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+        )}
       </Box>
 
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+      <Divider />
 
       {/* Admin Info */}
-      <Box sx={{ p: 2 }}>
-        <Typography variant="subtitle1" noWrap>
-          {user?.fullName || user?.username}
-        </Typography>
-        <Typography variant="body2" color="rgba(255,255,255,0.7)" noWrap>
-          Administrator
-        </Typography>
+      <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+        <Avatar
+          sx={{
+            width: 40,
+            height: 40,
+            bgcolor: theme.palette.secondary.main,
+            mr: 2,
+          }}
+        >
+          {user?.username?.[0]?.toUpperCase() || "A"}
+        </Avatar>
+        <Box>
+          <Typography variant="subtitle1" noWrap>
+            {user?.fullName || user?.username}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            Administrator
+          </Typography>
+        </Box>
       </Box>
 
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+      <Divider />
 
       <List sx={{ py: 1 }}>
         {menuItems.map((item) => (
@@ -107,11 +145,15 @@ const AdminSidebar = () => {
                 minHeight: 48,
                 px: 2.5,
                 py: 1.5,
+                ml: 0.5,
+                mr: 0.5,
+                borderRadius: 1,
+                mb: 0.5,
                 bgcolor: isActivePath(item.path)
-                  ? "rgba(255,255,255,0.2)"
+                  ? theme.palette.action.selected
                   : "transparent",
                 "&:hover": {
-                  bgcolor: "rgba(255,255,255,0.1)",
+                  bgcolor: theme.palette.action.hover,
                 },
               }}
             >
@@ -120,8 +162,8 @@ const AdminSidebar = () => {
                   minWidth: 0,
                   mr: 2,
                   color: isActivePath(item.path)
-                    ? "secondary.main"
-                    : "primary.contrastText",
+                    ? theme.palette.primary.main
+                    : theme.palette.text.primary,
                 }}
               >
                 {item.icon}
@@ -139,7 +181,7 @@ const AdminSidebar = () => {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+      <Divider />
 
       <ListItem disablePadding sx={{ display: "block" }}>
         <ListItemButton
@@ -148,9 +190,14 @@ const AdminSidebar = () => {
             minHeight: 48,
             px: 2.5,
             py: 1.5,
-            color: theme.palette.error.light,
+            ml: 0.5,
+            mr: 0.5,
+            mb: 2,
+            mt: 1,
+            borderRadius: 1,
+            color: theme.palette.error.main,
             "&:hover": {
-              bgcolor: "rgba(255,255,255,0.1)",
+              bgcolor: alpha(theme.palette.error.main, 0.1),
             },
           }}
         >
@@ -158,7 +205,7 @@ const AdminSidebar = () => {
             sx={{
               minWidth: 0,
               mr: 2,
-              color: theme.palette.error.light,
+              color: theme.palette.error.main,
             }}
           >
             <LogoutIcon />
@@ -172,7 +219,7 @@ const AdminSidebar = () => {
   return (
     <>
       {/* Mobile toggle button */}
-      {isMobile && (
+      {isMobile && !open && (
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -180,7 +227,7 @@ const AdminSidebar = () => {
           edge="start"
           sx={{
             position: "fixed",
-            left: open ? drawerWidth : 0,
+            left: 0,
             top: 10,
             zIndex: 1300,
             color: "primary.main",
@@ -189,10 +236,9 @@ const AdminSidebar = () => {
             boxShadow: 1,
             width: 40,
             height: 40,
-            transition: "left 0.3s",
           }}
         >
-          {open ? <ChevronLeftIcon /> : <MenuIcon />}
+          <MenuIcon />
         </IconButton>
       )}
 
@@ -206,12 +252,10 @@ const AdminSidebar = () => {
             keepMounted: true, // Better mobile performance
           }}
           sx={{
-            display: { xs: "block", md: "none" },
+            display: "block",
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              bgcolor: theme.palette.primary.dark,
-              color: theme.palette.primary.contrastText,
             },
           }}
         >
@@ -224,13 +268,12 @@ const AdminSidebar = () => {
           sx={{
             width: drawerWidth,
             flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
+            "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              bgcolor: theme.palette.primary.dark,
-              color: theme.palette.primary.contrastText,
-              position: "relative", // Change from fixed to relative
-              height: "100%",
+              borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+              position: "fixed", // Fixed position so it doesn't scroll
+              height: "100vh",
             },
           }}
           open

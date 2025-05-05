@@ -8,6 +8,7 @@ import {
   Alert,
   Breadcrumbs,
   Link as MuiLink,
+  Grid,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getProducts } from "../api/productApi";
@@ -19,7 +20,6 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 // Import refactored components
 import ProductFilter from "../components/products/ProductFilter";
-import FilterTags from "../components/products/ProductsPage/FilterTags";
 import ProductGrid from "../components/products/ProductsPage/ProductGrid";
 import ProductResults from "../components/products/ProductsPage/ProductResults";
 import EmptyResults from "../components/products/ProductsPage/EmptyResults";
@@ -133,35 +133,8 @@ const ProductsPage = () => {
     setPage(0); // Reset to first page when filters change
   };
 
-  // Determine the filter titles for display
-  const getFilterTitles = () => {
-    const titles = [];
-
-    if (filters.keyword) {
-      titles.push(`Search: "${filters.keyword}"`);
-    }
-
-    if (filters.riceType) {
-      titles.push(`Type: ${filters.riceType}`);
-    }
-
-    if (filters.origin) {
-      titles.push(`Origin: ${filters.origin}`);
-    }
-
-    if (filters.minPrice && filters.maxPrice) {
-      titles.push(`Price: ${filters.minPrice} - ${filters.maxPrice}`);
-    } else if (filters.minPrice) {
-      titles.push(`Price: From ${filters.minPrice}`);
-    } else if (filters.maxPrice) {
-      titles.push(`Price: Up to ${filters.maxPrice}`);
-    }
-
-    return titles;
-  };
-
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -182,55 +155,70 @@ const ProductsPage = () => {
         </Typography>
       </Box>
 
-      {/* Filters */}
-      <ProductFilter filters={filters} onFilterChange={handleFilterChange} />
-
-      {/* Applied Filters Tags */}
-      <FilterTags filterTitles={getFilterTitles()} />
-
-      {/* Error Alert */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Loading Indicator */}
-      {loading && (
-        <Box display="flex" justifyContent="center" my={6}>
-          <CircularProgress />
+      {/* Main Content Area */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 4,
+        }}
+      >
+        {/* Filter Sidebar */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "280px" },
+            flexShrink: 0,
+            mb: { xs: 3, md: 0 },
+          }}
+        >
+          <ProductFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
         </Box>
-      )}
 
-      {/* Products Grid */}
-      {!loading && products.length === 0 ? (
-        <EmptyResults />
-      ) : (
-        <>
-          {/* Results Count */}
-          {!loading && (
-            <ProductResults count={products.length} total={totalElements} />
+        {/* Product Content */}
+        <Box sx={{ flexGrow: 1 }}>
+          {/* Error Message */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
           )}
 
-          {/* Products Grid */}
-          <ProductGrid products={products} onAddToCart={handleAddToCart} />
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Box display="flex" justifyContent="center" mt={4}>
-              <Pagination
-                count={totalPages}
-                page={page + 1}
-                onChange={handlePageChange}
-                color="primary"
-                size="large"
-                showFirstButton
-                showLastButton
-              />
+          {/* Loading State */}
+          {loading ? (
+            <Box display="flex" justifyContent="center" my={6}>
+              <CircularProgress />
             </Box>
+          ) : products.length === 0 ? (
+            <EmptyResults />
+          ) : (
+            <>
+              {/* Results Count */}
+              <ProductResults count={products.length} total={totalElements} />
+
+              {/* Products Grid */}
+              <ProductGrid products={products} onAddToCart={handleAddToCart} />
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <Box display="flex" justifyContent="center" mt={4}>
+                  <Pagination
+                    count={totalPages}
+                    page={page + 1}
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="large"
+                    showFirstButton
+                    showLastButton
+                  />
+                </Box>
+              )}
+            </>
           )}
-        </>
-      )}
+        </Box>
+      </Box>
     </Container>
   );
 };

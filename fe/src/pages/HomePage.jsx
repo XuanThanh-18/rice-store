@@ -16,7 +16,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { getProducts } from "../api/productApi";
+import { getProducts, getRiceTypes } from "../api/productApi";
 import { formatCurrency } from "../utils/formatCurrency";
 
 // Banner image placeholder - replace with your actual image in production
@@ -25,7 +25,9 @@ const BANNER_IMAGE =
 
 const HomePage = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [riceTypes, setRiceTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoryLoading, setCategoryLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -44,8 +46,21 @@ const HomePage = () => {
         setLoading(false);
       }
     };
+    const fetchRiceTypes = async () => {
+      try {
+        setCategoryLoading(true);
+        const response = await getRiceTypes();
+        setRiceTypes(response.data || []);
+      } catch (error) {
+        console.error("Error fetching rice types:", error);
+        setRiceTypes([]); // Set empty array if fetch fails
+      } finally {
+        setCategoryLoading(false);
+      }
+    };
 
     fetchFeaturedProducts();
+    fetchRiceTypes();
   }, []);
 
   return (
@@ -60,7 +75,7 @@ const HomePage = () => {
           backgroundPosition: "center",
           display: "flex",
           alignItems: "center",
-          mb: 0,
+          mb: 6,
         }}
       >
         {/* Overlay */}
@@ -107,7 +122,11 @@ const HomePage = () => {
       </Box>
 
       {/* Featured Products Section */}
-      <Container maxWidth="lg" sx={{ bgcolor: "#ffffff", mb: 8, pt: 5 }}>
+      <Container
+        maxWidth={false}
+        disableGutters
+        sx={{ bgcolor: "#ffffff", mb: 8, pt: 5, width: "100%" }}
+      >
         <Box sx={{ mb: 4 }}>
           <Typography
             color="textPrimary"
@@ -185,20 +204,41 @@ const HomePage = () => {
       </Container>
 
       {/* Categories Section */}
-      <Box sx={{ bgcolor: "", py: 8 }}>
+      <Box sx={{ bgcolor: "grey.100", py: 8 }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" component="h2" gutterBottom>
+          <Typography
+            variant="h4"
+            component="h2"
+            gutterBottom
+            color="secondary"
+          >
             Rice Categories
           </Typography>
           <Divider sx={{ mb: 4 }} />
 
-          <Grid container spacing={3}>
-            {["Jasmine Rice", "Basmati Rice", "Brown Rice", "Black Rice"].map(
-              (category) => (
-                <Grid item xs={12} sm={6} md={3} key={category}>
+          {categoryLoading ? (
+            <Box display="flex" justifyContent="center" my={4}>
+              <CircularProgress />
+            </Box>
+          ) : riceTypes.length === 0 ? (
+            <Typography variant="body1" align="center">
+              No rice categories found. Please check back later.
+            </Typography>
+          ) : (
+            <Grid container spacing={3} justifyContent="center">
+              {riceTypes.map((category) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md="auto"
+                  key={category.id}
+                  sx={{ height: "100%" }}
+                >
                   <Paper
                     sx={{
                       p: 3,
+                      width: "100%",
                       textAlign: "center",
                       height: "100%",
                       display: "flex",
@@ -212,20 +252,33 @@ const HomePage = () => {
                       },
                     }}
                     component={Link}
-                    to={`/products?riceType=${encodeURIComponent(category)}`}
+                    to={`/products?riceType=${encodeURIComponent(
+                      category.name
+                    )}`}
                     style={{ textDecoration: "none" }}
                   >
                     <Typography variant="h6" component="h3" gutterBottom>
-                      {category}
+                      {category.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Explore our selection of {category.toLowerCase()}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        wordWrap: "break-word",
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {category.description
+                        ? category.description.length > 60
+                          ? category.description.substring(0, 60) + "..."
+                          : category.description
+                        : `Explore our selection of ${category.name.toLowerCase()}`}
                     </Typography>
                   </Paper>
                 </Grid>
-              )
-            )}
-          </Grid>
+              ))}
+            </Grid>
+          )}
         </Container>
       </Box>
 
@@ -260,7 +313,7 @@ const HomePage = () => {
           <Grid item xs={12} md={6}>
             <Box
               component="img"
-              src="https://images.unsplash.com/photo-1603636060618-75a77d29c722?auto=format&fit=crop&w=600"
+              src=""
               alt="Rice fields"
               sx={{
                 width: "100%",
