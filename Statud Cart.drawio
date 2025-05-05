@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36" version="26.2.13">
+  <diagram name="Page-1" id="kZpzCHdwkky1866xyNUm">
+    <mxGraphModel dx="1130" dy="580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-1" value="Status Cart" style="swimlane;whiteSpace=wrap;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="128" width="785.5" height="570" as="geometry" />
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-2" value="" style="ellipse;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="fuhSDwGU7RZI67mXa5Rf-1">
+          <mxGeometry x="60" y="222" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-3" value="EMPTY" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="fuhSDwGU7RZI67mXa5Rf-1">
+          <mxGeometry x="63" y="112" width="114.5" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-4" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.166;entryY=1.034;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="fuhSDwGU7RZI67mXa5Rf-1" source="fuhSDwGU7RZI67mXa5Rf-2" target="fuhSDwGU7RZI67mXa5Rf-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="175.5" y="322" as="sourcePoint" />
+            <mxPoint x="370" y="173" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-11" value="ACTIVE" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="fuhSDwGU7RZI67mXa5Rf-1">
+          <mxGeometry x="550" y="112" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-12" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="fuhSDwGU7RZI67mXa5Rf-1" target="fuhSDwGU7RZI67mXa5Rf-11">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="120" y="162" as="sourcePoint" />
+            <mxPoint x="510" y="212" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="120" y="192" />
+              <mxPoint x="610" y="192" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-13" value="thêm sản phẩm" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fuhSDwGU7RZI67mXa5Rf-12">
+          <mxGeometry x="0.1431" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.325;entryY=-0.034;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="fuhSDwGU7RZI67mXa5Rf-1" source="fuhSDwGU7RZI67mXa5Rf-11" target="fuhSDwGU7RZI67mXa5Rf-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="162" as="sourcePoint" />
+            <mxPoint x="360" y="130" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="610" y="62" />
+              <mxPoint x="100" y="62" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-15" value="xóa tất cả sản phẩm" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fuhSDwGU7RZI67mXa5Rf-14">
+          <mxGeometry x="-0.0477" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-16" value="CHECKED_OUT" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="fuhSDwGU7RZI67mXa5Rf-1">
+          <mxGeometry x="300" y="112" width="120" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-17" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="fuhSDwGU7RZI67mXa5Rf-1" source="fuhSDwGU7RZI67mXa5Rf-11" target="fuhSDwGU7RZI67mXa5Rf-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="292" as="sourcePoint" />
+            <mxPoint x="590" y="242" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-18" value="hoàn tất đặt hàng&amp;nbsp;&lt;div&gt;/ tạo đơn hàng mới&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fuhSDwGU7RZI67mXa5Rf-17">
+          <mxGeometry x="-0.085" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-19" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="fuhSDwGU7RZI67mXa5Rf-1" source="fuhSDwGU7RZI67mXa5Rf-16" target="fuhSDwGU7RZI67mXa5Rf-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="292" as="sourcePoint" />
+            <mxPoint x="590" y="242" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fuhSDwGU7RZI67mXa5Rf-20" value="tự động sau khi&lt;div&gt;&amp;nbsp;tạo đơn hàng&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="fuhSDwGU7RZI67mXa5Rf-19">
+          <mxGeometry x="-0.1974" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
