@@ -60,7 +60,7 @@ const HomePage = () => {
           backgroundPosition: "center",
           display: "flex",
           alignItems: "center",
-          mb: 6,
+          mb: 0,
         }}
       >
         {/* Overlay */}
@@ -79,11 +79,11 @@ const HomePage = () => {
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Box sx={{ maxWidth: "600px", color: "white" }}>
             <Typography variant="h2" component="h1" gutterBottom>
-              Premium Quality Rice
+              Gạo Chất Lượng Cao
             </Typography>
             <Typography variant="h5" paragraph>
-              Discover the finest selection of rice varieties from around the
-              world
+              Khám phá sự lựa chọn tốt nhất các giống lúa từ khắp nơi trên thế
+              giới
             </Typography>
             <Button
               variant="contained"
@@ -100,17 +100,22 @@ const HomePage = () => {
                 },
               }}
             >
-              Shop Now
+              Mua sắm ngay
             </Button>
           </Box>
         </Container>
       </Box>
 
       {/* Featured Products Section */}
-      <Container maxWidth="lg" sx={{ mb: 8 }}>
+      <Container maxWidth="lg" sx={{ bgcolor: "#ffffff", mb: 8, pt: 5 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" component="h2" gutterBottom>
-            Featured Products
+          <Typography
+            color="textPrimary"
+            variant="h4"
+            component="h2"
+            gutterBottom
+          >
+            Sản phẩm nổi bật
           </Typography>
           <Divider />
         </Box>
@@ -180,7 +185,7 @@ const HomePage = () => {
       </Container>
 
       {/* Categories Section */}
-      <Box sx={{ bgcolor: "grey.100", py: 8 }}>
+      <Box sx={{ bgcolor: "", py: 8 }}>
         <Container maxWidth="lg">
           <Typography variant="h4" component="h2" gutterBottom>
             Rice Categories
