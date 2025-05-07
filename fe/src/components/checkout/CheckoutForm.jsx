@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,20 +10,26 @@ import {
   RadioGroup,
   Radio,
   Checkbox,
-  FormHelperText,
-  CircularProgress,
+  InputAdornment,
   Divider,
   Paper,
+  CircularProgress,
+  Collapse,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { formatCurrency } from "../../utils/formatCurrency";
-
-const paymentMethods = [
-  { value: "creditCard", label: "Credit Card" },
-  { value: "paypal", label: "PayPal" },
-  { value: "bankTransfer", label: "Bank Transfer" },
-];
+import ShippingInfoForm from "./ShippingInfoForm";
+import BillingInfoForm from "./BillingInfoForm";
+import PaymentMethodForm from "./PaymentMethodForm";
+import AdditionalNotesForm from "./AdditionalNotesForm";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import HomeIcon from "@mui/icons-material/Home";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import DescriptionIcon from "@mui/icons-material/Description";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const checkoutValidationSchema = Yup.object({
   shippingAddress: Yup.string().required("Shipping address is required"),
@@ -37,8 +43,23 @@ const checkoutValidationSchema = Yup.object({
 });
 
 const CheckoutForm = ({ cart, onCheckout, loading }) => {
+  const [sections, setSections] = useState({
+    shipping: true,
+    billing: true,
+    payment: true,
+    notes: true,
+  });
+
+  // Function to toggle section collapse
+  const toggleSection = (section) => {
+    setSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
   // Calculate totals
-  const { totalAmount, items } = cart;
+  const { totalAmount } = cart;
   const shippingCost = totalAmount >= 50 ? 0 : 5.99;
   const tax = totalAmount * 0.07; // 7% tax
   const finalTotal = totalAmount + shippingCost + tax;
@@ -65,6 +86,60 @@ const CheckoutForm = ({ cart, onCheckout, loading }) => {
     setSubmitting(false);
   };
 
+  // Function to render a section header
+  const SectionHeader = ({ title, icon, section, expanded }) => (
+    <Box
+      onClick={() => toggleSection(section)}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        py: 2,
+        px: 1,
+        cursor: "pointer",
+        borderRadius: 1,
+        "&:hover": {
+          bgcolor: "action.hover",
+        },
+        transition: "background-color 0.2s ease",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: expanded ? "primary.main" : "grey.200",
+          color: expanded ? "white" : "text.secondary",
+          borderRadius: "50%",
+          p: 1,
+          mr: 2,
+          transition: "all 0.3s ease",
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography
+        variant="h6"
+        color={expanded ? "primary.main" : "text.primary"}
+      >
+        {title}
+      </Typography>
+      {expanded && (
+        <CheckCircleIcon
+          color="success"
+          sx={{
+            ml: "auto",
+            animation: "fadeIn 0.5s",
+            "@keyframes fadeIn": {
+              "0%": { opacity: 0 },
+              "100%": { opacity: 1 },
+            },
+          }}
+        />
+      )}
+    </Box>
+  );
+
   return (
     <Formik
       initialValues={initialValues}
@@ -74,198 +149,86 @@ const CheckoutForm = ({ cart, onCheckout, loading }) => {
       {({ values, errors, touched, isSubmitting, setFieldValue }) => (
         <Form>
           <Grid container spacing={3}>
-            {/* Shipping Information */}
+            {/* Shipping Section */}
             <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Shipping Information
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Field
-                as={TextField}
-                fullWidth
-                multiline
-                rows={3}
-                name="shippingAddress"
-                label="Shipping Address"
-                variant="outlined"
-                error={
-                  touched.shippingAddress && Boolean(errors.shippingAddress)
-                }
-                helperText={touched.shippingAddress && errors.shippingAddress}
+              <SectionHeader
+                title="Shipping Information"
+                icon={<LocalShippingIcon />}
+                section="shipping"
+                expanded={sections.shipping}
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Field
-                as={TextField}
-                fullWidth
-                name="phoneNumber"
-                label="Phone Number"
-                variant="outlined"
-                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-                helperText={touched.phoneNumber && errors.phoneNumber}
-              />
-            </Grid>
-
-            {/* Billing Information */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Billing Information
-              </Typography>
               <Divider sx={{ mb: 2 }} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="useShippingAsBilling"
-                    checked={values.useShippingAsBilling}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      setFieldValue("useShippingAsBilling", checked);
-                      if (checked) {
-                        setFieldValue("billingAddress", values.shippingAddress);
-                      }
-                    }}
+              <Collapse in={sections.shipping} timeout={500}>
+                <Box sx={{ p: 1 }}>
+                  <ShippingInfoForm
+                    values={values}
+                    errors={errors}
+                    touched={touched}
                   />
-                }
-                label="Use shipping address as billing address"
+                </Box>
+              </Collapse>
+            </Grid>
+
+            {/* Billing Section */}
+            <Grid item xs={12}>
+              <SectionHeader
+                title="Billing Information"
+                icon={<HomeIcon />}
+                section="billing"
+                expanded={sections.billing}
               />
-            </Grid>
-
-            {!values.useShippingAsBilling && (
-              <Grid item xs={12}>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  multiline
-                  rows={3}
-                  name="billingAddress"
-                  label="Billing Address"
-                  variant="outlined"
-                  error={
-                    touched.billingAddress && Boolean(errors.billingAddress)
-                  }
-                  helperText={touched.billingAddress && errors.billingAddress}
-                />
-              </Grid>
-            )}
-
-            {/* Payment Method */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Payment Method
-              </Typography>
               <Divider sx={{ mb: 2 }} />
+              <Collapse in={sections.billing} timeout={500}>
+                <Box sx={{ p: 1 }}>
+                  <BillingInfoForm
+                    values={values}
+                    setFieldValue={setFieldValue}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </Box>
+              </Collapse>
             </Grid>
 
+            {/* Payment Section */}
             <Grid item xs={12}>
-              <FormControl
-                component="fieldset"
-                error={touched.paymentMethod && Boolean(errors.paymentMethod)}
-              >
-                <RadioGroup
-                  name="paymentMethod"
-                  value={values.paymentMethod}
-                  onChange={(e) =>
-                    setFieldValue("paymentMethod", e.target.value)
-                  }
-                >
-                  {paymentMethods.map((method) => (
-                    <FormControlLabel
-                      key={method.value}
-                      value={method.value}
-                      control={<Radio />}
-                      label={method.label}
-                    />
-                  ))}
-                </RadioGroup>
-                {touched.paymentMethod && errors.paymentMethod && (
-                  <FormHelperText>{errors.paymentMethod}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-
-            {/* Additional Notes */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Additional Notes
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Field
-                as={TextField}
-                fullWidth
-                multiline
-                rows={3}
-                name="notes"
-                label="Notes for your order (optional)"
-                variant="outlined"
+              <SectionHeader
+                title="Payment Method"
+                icon={<CreditCardIcon />}
+                section="payment"
+                expanded={sections.payment}
               />
-            </Grid>
-
-            {/* Order Summary */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Order Summary
-              </Typography>
               <Divider sx={{ mb: 2 }} />
+              <Collapse in={sections.payment} timeout={500}>
+                <Box sx={{ p: 1 }}>
+                  <PaymentMethodForm
+                    values={values}
+                    setFieldValue={setFieldValue}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </Box>
+              </Collapse>
             </Grid>
 
+            {/* Notes Section */}
             <Grid item xs={12}>
-              <Paper variant="outlined" sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={8}>
-                    <Typography variant="body1">
-                      Subtotal ({items.length} items):
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4} sx={{ textAlign: "right" }}>
-                    <Typography variant="body1">
-                      {formatCurrency(totalAmount)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={8}>
-                    <Typography variant="body1">Shipping:</Typography>
-                  </Grid>
-                  <Grid item xs={4} sx={{ textAlign: "right" }}>
-                    <Typography variant="body1">
-                      {shippingCost === 0
-                        ? "FREE"
-                        : formatCurrency(shippingCost)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={8}>
-                    <Typography variant="body1">Estimated Tax:</Typography>
-                  </Grid>
-                  <Grid item xs={4} sx={{ textAlign: "right" }}>
-                    <Typography variant="body1">
-                      {formatCurrency(tax)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Divider sx={{ my: 1 }} />
-                  </Grid>
-
-                  <Grid item xs={8}>
-                    <Typography variant="h6">Total:</Typography>
-                  </Grid>
-                  <Grid item xs={4} sx={{ textAlign: "right" }}>
-                    <Typography variant="h6" color="primary.main">
-                      {formatCurrency(finalTotal)}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Paper>
+              <SectionHeader
+                title="Additional Notes"
+                icon={<DescriptionIcon />}
+                section="notes"
+                expanded={sections.notes}
+              />
+              <Divider sx={{ mb: 2 }} />
+              <Collapse in={sections.notes} timeout={500}>
+                <Box sx={{ p: 1 }}>
+                  <AdditionalNotesForm
+                    values={values}
+                    errors={errors}
+                    touched={touched}
+                  />
+                </Box>
+              </Collapse>
             </Grid>
 
             {/* Submit Button */}
@@ -277,7 +240,16 @@ const CheckoutForm = ({ cart, onCheckout, loading }) => {
                 size="large"
                 fullWidth
                 disabled={isSubmitting || loading}
-                sx={{ py: 1.5 }}
+                sx={{
+                  py: 2,
+                  fontWeight: "bold",
+                  boxShadow: 3,
+                  "&:hover": {
+                    boxShadow: 5,
+                    transform: "translateY(-2px)",
+                  },
+                  transition: "all 0.3s",
+                }}
               >
                 {loading ? (
                   <CircularProgress size={24} color="inherit" />

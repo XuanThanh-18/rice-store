@@ -8,10 +8,20 @@ import {
   CircularProgress,
   Alert,
   Breadcrumbs,
-  Link as MuiLink,
+  Button,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PaymentIcon from "@mui/icons-material/Payment";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { toast } from "react-toastify";
 import {
   getCart,
@@ -21,10 +31,11 @@ import {
 } from "../api/cartApi";
 
 // Import refactored components
-import CartHeader from "../components/cart/CartHeader";
 import CartItemsList from "../components/cart/CartItemsList";
 import CartSummary from "../components/cart/CartSummary";
 import EmptyCart from "../components/cart/EmptyCart";
+
+// const steps = ["Shopping Cart", "Checkout", "Confirmation"];
 
 const CartPage = () => {
   const [cart, setCart] = useState({ items: [], totalAmount: 0 });
@@ -103,25 +114,90 @@ const CartPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 5 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
         sx={{ mb: 3 }}
       >
-        <MuiLink component={Link} to="/" color="inherit">
+        <Typography
+          component={Link}
+          to="/"
+          color="inherit"
+          sx={{ textDecoration: "none" }}
+        >
           Home
-        </MuiLink>
+        </Typography>
         <Typography color="text.primary">Shopping Cart</Typography>
       </Breadcrumbs>
 
+      {/* Checkout Progress */}
+      <Box sx={{ mb: 5, mt: 3 }}>
+        <Stepper activeStep={0} alternativeLabel>
+          <Step>
+            <StepLabel
+              StepIconProps={{
+                sx: {
+                  color: "primary.main",
+                  "& .MuiStepIcon-text": { fill: "#fff" },
+                },
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: "bold", color: "primary.main" }}
+              >
+                Cart
+              </Typography>
+            </StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>
+              <Typography variant="body2">Checkout</Typography>
+            </StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>
+              <Typography variant="body2">Confirmation</Typography>
+            </StepLabel>
+          </Step>
+        </Stepper>
+      </Box>
+
       {/* Page Title with Cart Actions */}
-      <CartHeader
-        itemCount={cart.items.length}
-        onClearCart={handleClearCart}
-        clearingCart={clearingCart}
-      />
+      <Box
+        sx={{
+          mb: 4,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <ShoppingCartIcon
+            sx={{ mr: 1, fontSize: 32, color: "primary.main" }}
+          />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
+            Your Shopping Cart
+          </Typography>
+        </Box>
+
+        {cart.items.length > 0 && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={handleClearCart}
+            disabled={clearingCart}
+            size="small"
+            sx={{ px: 2, py: 1 }}
+          >
+            {clearingCart ? "Clearing..." : "Clear Cart"}
+          </Button>
+        )}
+      </Box>
 
       {/* Error Message */}
       {error && (
@@ -135,21 +211,41 @@ const CartPage = () => {
 
       {/* Cart Contents */}
       {cart.items.length > 0 && (
-        <Grid container spacing={4}>
-          {/* Cart Items */}
-          <Grid item xs={12} md={8}>
-            <CartItemsList
-              items={cart.items}
-              onUpdateQuantity={handleUpdateQuantity}
-              onRemove={handleRemoveItem}
-            />
-          </Grid>
+        <Card
+          elevation={2}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+            mb: 5,
+          }}
+        >
+          <CardContent sx={{ p: 0 }}>
+            <Box sx={{ p: 3, bgcolor: "primary.main" }}>
+              <Typography
+                variant="h6"
+                sx={{ color: "white", fontWeight: "bold" }}
+              >
+                Cart Items ({cart.items.length})
+              </Typography>
+            </Box>
 
-          {/* Cart Summary */}
-          <Grid item xs={12} md={4}>
-            <CartSummary cart={cart} />
-          </Grid>
-        </Grid>
+            <Grid container spacing={4} sx={{ p: 3 }}>
+              {/* Cart Items */}
+              <Grid item xs={12} md={8}>
+                <CartItemsList
+                  items={cart.items}
+                  onUpdateQuantity={handleUpdateQuantity}
+                  onRemove={handleRemoveItem}
+                />
+              </Grid>
+
+              {/* Cart Summary */}
+              <Grid item xs={12} md={4}>
+                <CartSummary cart={cart} />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
       )}
     </Container>
   );

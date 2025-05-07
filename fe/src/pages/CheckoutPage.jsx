@@ -1,4 +1,3 @@
-// fe/src/pages/CheckoutPage.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -11,23 +10,34 @@ import {
   Alert,
   CircularProgress,
   Breadcrumbs,
-  Link as MuiLink,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { getCart } from "../api/cartApi";
 import { createOrder } from "../api/orderApi";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import PaymentIcon from "@mui/icons-material/Payment";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DoneIcon from "@mui/icons-material/Done";
 import { toast } from "react-toastify";
 
 // Import refactored components
 import CheckoutForm from "../components/checkout/CheckoutForm";
 import OrderSuccessMessage from "../components/checkout/OrderSuccessMessage";
+import OrderSummary from "../components/checkout/OrderSummary";
 
-const steps = ["Shopping Cart", "Checkout", "Order Confirmation"];
+// const steps = ["Shopping Cart", "Checkout", "Confirmation"];
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(1);
   const [cart, setCart] = useState({ items: [], totalAmount: 0 });
   const [loading, setLoading] = useState(true);
@@ -79,8 +89,7 @@ const CheckoutPage = () => {
         // Log success for debugging
         console.log("Order created successfully:", response.data);
 
-        // Don't redirect automatically - let the user click through
-        // This gives them time to see the success message
+        // Show success message
         toast.success("Your order has been placed successfully!");
       } else {
         // Handle unexpected response format
@@ -131,42 +140,169 @@ const CheckoutPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 5 }}>
       {/* Breadcrumbs */}
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
         sx={{ mb: 3 }}
       >
-        <MuiLink component={Link} to="/" color="inherit">
+        <Typography
+          component={Link}
+          to="/"
+          color="inherit"
+          sx={{ textDecoration: "none" }}
+        >
           Home
-        </MuiLink>
-        <MuiLink component={Link} to="/cart" color="inherit">
+        </Typography>
+        <Typography
+          component={Link}
+          to="/cart"
+          color="inherit"
+          sx={{ textDecoration: "none" }}
+        >
           Cart
-        </MuiLink>
+        </Typography>
         <Typography color="text.primary">Checkout</Typography>
       </Breadcrumbs>
 
       {/* Page Title */}
       <Box sx={{ mb: 4, display: "flex", alignItems: "center" }}>
-        <PaymentIcon sx={{ mr: 1, fontSize: 28 }} />
-        <Typography variant="h4" component="h1">
-          Checkout
+        <PaymentIcon
+          sx={{
+            mr: 1,
+            fontSize: 32,
+            color: "primary.main",
+            animation: activeStep === 2 ? "pulse 1.5s infinite" : "none",
+            "@keyframes pulse": {
+              "0%": { opacity: 0.7 },
+              "50%": { opacity: 1 },
+              "100%": { opacity: 0.7 },
+            },
+          }}
+        />
+        <Typography variant="h4" component="h1" sx={{ fontWeight: "bold" }}>
+          {activeStep === 1 ? "Checkout" : "Order Confirmation"}
         </Typography>
       </Box>
 
       {/* Checkout Stepper */}
-      <Stepper activeStep={activeStep} sx={{ mb: 5 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Card
+        elevation={3}
+        sx={{
+          mb: 5,
+          borderRadius: 2,
+          overflow: "hidden",
+        }}
+      >
+        <CardContent sx={{ bgcolor: "primary.light", py: 3, px: 2 }}>
+          <Stepper
+            activeStep={activeStep - 1}
+            alternativeLabel={!isMobile}
+            orientation={isMobile ? "vertical" : "horizontal"}
+          >
+            <Step>
+              <StepLabel
+                StepIconProps={{
+                  sx: { color: "#fff" },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: activeStep === 0 ? "bold" : "normal",
+                    color:
+                      activeStep === 0 ? "primary.contrastText" : "inherit",
+                  }}
+                >
+                  <ShoppingCartIcon
+                    fontSize="small"
+                    sx={{
+                      mr: 0.5,
+                      verticalAlign: "middle",
+                      fontSize: "1rem",
+                    }}
+                  />
+                  Cart
+                </Typography>
+              </StepLabel>
+            </Step>
+            <Step>
+              <StepLabel
+                StepIconProps={{
+                  sx: {
+                    color: activeStep >= 1 ? "primary.main" : "inherit",
+                    "& .MuiStepIcon-text": {
+                      fill: activeStep >= 1 ? "#fff" : "inherit",
+                    },
+                  },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: activeStep === 1 ? "bold" : "normal",
+                    color: activeStep === 1 ? "primary.main" : "inherit",
+                  }}
+                >
+                  <PaymentIcon
+                    fontSize="small"
+                    sx={{
+                      mr: 0.5,
+                      verticalAlign: "middle",
+                      fontSize: "1rem",
+                    }}
+                  />
+                  Checkout
+                </Typography>
+              </StepLabel>
+            </Step>
+            <Step>
+              <StepLabel
+                StepIconProps={{
+                  sx: {
+                    color: activeStep >= 2 ? "success.main" : "inherit",
+                    "& .MuiStepIcon-text": {
+                      fill: activeStep >= 2 ? "#fff" : "inherit",
+                    },
+                  },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: activeStep === 2 ? "bold" : "normal",
+                    color: activeStep === 2 ? "success.main" : "inherit",
+                  }}
+                >
+                  <DoneIcon
+                    fontSize="small"
+                    sx={{
+                      mr: 0.5,
+                      verticalAlign: "middle",
+                      fontSize: "1rem",
+                    }}
+                  />
+                  Confirmation
+                </Typography>
+              </StepLabel>
+            </Step>
+          </Stepper>
+        </CardContent>
+      </Card>
 
       {/* Error Message */}
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert
+          severity="error"
+          sx={{
+            mb: 3,
+            borderRadius: 2,
+            "& .MuiAlert-icon": {
+              fontSize: "1.5rem",
+            },
+          }}
+        >
           {error}
         </Alert>
       )}
@@ -179,15 +315,44 @@ const CheckoutPage = () => {
         />
       )}
 
-      {/* Checkout Form */}
+      {/* Checkout Form and Order Summary */}
       {activeStep === 1 && (
-        <Paper sx={{ p: 3 }} elevation={3}>
-          <CheckoutForm
-            cart={cart}
-            onCheckout={handleCheckout}
-            loading={submitting}
-          />
-        </Paper>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={8}>
+            <Card
+              elevation={3}
+              sx={{
+                borderRadius: 2,
+                overflow: "hidden",
+                height: "100%",
+              }}
+            >
+              <CardHeader
+                title="Shipping & Payment Details"
+                sx={{
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
+                  py: 2,
+                  "& .MuiCardHeader-title": {
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+              <CardContent>
+                <CheckoutForm
+                  cart={cart}
+                  onCheckout={handleCheckout}
+                  loading={submitting}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <OrderSummary cart={cart} />
+          </Grid>
+        </Grid>
       )}
     </Container>
   );

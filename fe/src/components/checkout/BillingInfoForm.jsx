@@ -6,52 +6,147 @@ import {
   Divider,
   Checkbox,
   FormControlLabel,
+  Box,
+  InputAdornment,
+  Paper,
+  FormHelperText,
+  Fade,
 } from "@mui/material";
 import { Field } from "formik";
+import HomeIcon from "@mui/icons-material/Home";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
 
-const BillingInfoForm = ({ values, setFieldValue }) => {
+const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
   return (
-    <>
-      <Grid item xs={12} sx={{ mt: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Billing Information
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="subtitle1" gutterBottom color="text.secondary">
+          Enter billing address or use shipping information
         </Typography>
-        <Divider sx={{ mb: 2 }} />
       </Grid>
 
       <Grid item xs={12}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="useShippingAsBilling"
-              checked={values.useShippingAsBilling}
-              onChange={(e) => {
-                const checked = e.target.checked;
-                setFieldValue("useShippingAsBilling", checked);
-                if (checked) {
-                  setFieldValue("billingAddress", values.shippingAddress);
-                }
-              }}
-            />
-          }
-          label="Use shipping address as billing address"
-        />
+        <Paper
+          elevation={0}
+          sx={{
+            p: 1.5,
+            borderRadius: 2,
+            bgcolor: values.useShippingAsBilling ? "success.light" : "grey.100",
+            border: "1px solid",
+            borderColor: values.useShippingAsBilling
+              ? "success.main"
+              : "divider",
+            transition: "all 0.3s ease",
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="useShippingAsBilling"
+                checked={values.useShippingAsBilling}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setFieldValue("useShippingAsBilling", checked);
+                  if (checked) {
+                    setFieldValue("billingAddress", values.shippingAddress);
+                  }
+                }}
+                color="success"
+              />
+            }
+            label={
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <SyncAltIcon
+                  sx={{
+                    fontSize: 18,
+                    mr: 1,
+                    color: values.useShippingAsBilling
+                      ? "success.main"
+                      : "text.secondary",
+                    transition: "color 0.3s ease",
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: values.useShippingAsBilling
+                      ? "medium"
+                      : "normal",
+                    color: values.useShippingAsBilling
+                      ? "success.main"
+                      : "text.primary",
+                  }}
+                >
+                  Use shipping address as billing address
+                </Typography>
+              </Box>
+            }
+          />
+        </Paper>
       </Grid>
 
       {!values.useShippingAsBilling && (
+        <Fade in={!values.useShippingAsBilling} timeout={500}>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item xs={12}>
+              <Field
+                as={TextField}
+                fullWidth
+                multiline
+                rows={4}
+                name="billingAddress"
+                label="Billing Address"
+                variant="outlined"
+                error={touched.billingAddress && Boolean(errors.billingAddress)}
+                helperText={touched.billingAddress && errors.billingAddress}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LocationOnIcon color="primary" fontSize="small" />
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder="Enter your billing address"
+              />
+              <FormHelperText>
+                Please include street address, city, state, and ZIP code
+              </FormHelperText>
+            </Grid>
+          </Grid>
+        </Fade>
+      )}
+
+      {values.useShippingAsBilling && (
         <Grid item xs={12}>
-          <Field
-            as={TextField}
-            fullWidth
-            multiline
-            rows={3}
-            name="billingAddress"
-            label="Billing Address"
-            variant="outlined"
-          />
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 1,
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "divider",
+              mt: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Billing address is the same as your shipping address:
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                mt: 1,
+                whiteSpace: "pre-line",
+                fontStyle: "italic",
+                color: "text.primary",
+              }}
+            >
+              {values.shippingAddress}
+            </Typography>
+          </Box>
         </Grid>
       )}
-    </>
+    </Grid>
   );
 };
 
