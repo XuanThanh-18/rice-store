@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import StatCard from "./StatCard";
+import StatCard from "./StartCard";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import PeopleIcon from "@mui/icons-material/People";
 import InventoryIcon from "@mui/icons-material/Inventory";

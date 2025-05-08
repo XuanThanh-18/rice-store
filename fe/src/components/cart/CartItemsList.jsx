@@ -2,11 +2,8 @@ import React from "react";
 import {
   Box,
   Typography,
-  Divider,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
+  Divider,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -18,101 +15,94 @@ const CartItemsList = ({ items, onUpdateQuantity, onRemove }) => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {/* Cart Header - Only visible on larger screens */}
+      {/* Tiêu đề giỏ hàng - chỉ hiện trên màn hình lớn */}
       {!isMobile && (
-        <Box
+        <Paper
+          elevation={1}
           sx={{
             display: "flex",
             alignItems: "center",
-            bgcolor: "grey.100",
+            bgcolor: "background.default",
             p: 2,
-            borderRadius: "12px 12px 0 0",
+            mb: 2,
+            borderRadius: 2,
             border: "1px solid",
             borderColor: "divider",
-            borderBottom: "none",
           }}
         >
-          <Box sx={{ width: "50%", pl: 2 }}>
+          <Box sx={{ width: "2%" }}></Box>
+          <Box sx={{ width: "45%", pl: 2 }}>
             <Typography variant="subtitle1" fontWeight="bold">
-              Product
+              Sản phẩm
             </Typography>
           </Box>
-          <Box sx={{ width: "20%", textAlign: "center" }}>
+          <Box sx={{ width: "25%", textAlign: "center" }}>
             <Typography variant="subtitle1" fontWeight="bold">
-              Quantity
+              Số lượng
             </Typography>
           </Box>
-          <Box sx={{ width: "30%", textAlign: "right", pr: 2 }}>
+          <Box sx={{ width: "25%", textAlign: "right", pr: 3 }}>
             <Typography variant="subtitle1" fontWeight="bold">
-              Subtotal
+              Thành tiền
             </Typography>
           </Box>
-        </Box>
+        </Paper>
       )}
 
-      {/* Cart Items */}
-      <Box
-        sx={{
-          borderRadius: isMobile ? 2 : "0 0 12px 12px",
-          bgcolor: "background.paper",
-          overflow: "hidden",
-        }}
-      >
-        {items.map((item, index) => (
-          <React.Fragment key={item.id}>
+      {/* Danh sách sản phẩm trong giỏ hàng */}
+      <Box sx={{ mb: 3 }}>
+        {items.length > 0 ? (
+          items.map((item) => (
             <CartItem
+              key={item.id}
               item={item}
               onUpdateQuantity={onUpdateQuantity}
               onRemove={onRemove}
             />
-            {index < items.length - 1 && (
-              <Divider variant="middle" sx={{ my: 0.5 }} />
-            )}
-          </React.Fragment>
-        ))}
+          ))
+        ) : (
+          <Paper
+            sx={{
+              py: 6,
+              textAlign: "center",
+              borderRadius: 2,
+              bgcolor: "background.paper",
+            }}
+          >
+            <Typography variant="body1" color="text.secondary">
+              Giỏ hàng của bạn đang trống
+            </Typography>
+          </Paper>
+        )}
       </Box>
 
-      {/* Cart Summary - Mobile only */}
-      {isMobile && (
-        <Box
+      {/* Tổng kết giỏ hàng - chỉ hiện trên mobile */}
+      {isMobile && items.length > 0 && (
+        <Paper
           sx={{
             mt: 3,
             p: 2,
-            bgcolor: "grey.100",
+            bgcolor: "background.default",
             borderRadius: 2,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            border: "1px solid",
+            borderColor: "divider",
           }}
         >
           <Typography variant="subtitle1" fontWeight="medium">
-            Summary:
+            Tổng số:
           </Typography>
           <Box>
             <Typography variant="body2">
-              {items.length} {items.length === 1 ? "item" : "items"}
+              {items.length} {items.length === 1 ? "sản phẩm" : "sản phẩm"}
             </Typography>
             <Typography variant="body2">
-              {items.reduce((total, item) => total + item.quantity, 0)} units
+              {items.reduce((total, item) => total + item.quantity, 0)} đơn vị
             </Typography>
           </Box>
-        </Box>
-      )}
-
-      {/* Empty State Placeholder */}
-      {items.length === 0 && (
-        <Box
-          sx={{
-            py: 6,
-            textAlign: "center",
-            bgcolor: "background.paper",
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="body1" color="text.secondary">
-            Your cart is empty
-          </Typography>
-        </Box>
+        </Paper>
       )}
     </Box>
   );

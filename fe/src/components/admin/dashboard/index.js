@@ -4,7 +4,7 @@
 export { default as DashboardLayout } from "./DashboardLayout";
 
 // Cards
-export { default as StatCard } from "./StatCard";
+export { default as StatCard } from "./StartCard";
 export { default as StatsOverview } from "./StatsOverview";
 
 // Charts
