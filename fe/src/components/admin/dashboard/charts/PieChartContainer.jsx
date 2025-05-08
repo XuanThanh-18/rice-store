@@ -42,6 +42,7 @@ const PieChartContainer = ({
         height: height,
         boxShadow: 2,
         borderRadius: 2,
+        width: "100%", // Ensure full width of container
       }}
     >
       {/* Chart Title */}
@@ -52,7 +53,14 @@ const PieChartContainer = ({
       <Divider sx={{ mb: 2 }} />
 
       {/* Chart Content with Loading State */}
-      <Box sx={{ flexGrow: 1, position: "relative" }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          position: "relative",
+          minHeight: 300, // Ensure minimum height for the chart
+          overflow: "visible", // Prevent content from being cut off
+        }}
+      >
         {loading ? (
           <Box
             sx={{
@@ -82,13 +90,24 @@ const PieChartContainer = ({
             </Typography>
           </Box>
         ) : (
-          <ActiveShapePieChart
-            data={data}
-            dataKey={dataKey}
-            nameKey={nameKey}
-            colors={colors}
-            tooltipValueLabel={tooltipValueLabel}
-          />
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              // Add padding to prevent labels from being cut off
+              px: 3,
+              pb: 2,
+            }}
+          >
+            <ActiveShapePieChart
+              data={data}
+              dataKey={dataKey}
+              nameKey={nameKey}
+              colors={colors}
+              tooltipValueLabel={tooltipValueLabel}
+            />
+          </Box>
         )}
       </Box>
     </Paper>

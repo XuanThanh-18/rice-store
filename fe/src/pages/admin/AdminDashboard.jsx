@@ -45,8 +45,8 @@ const AdminDashboard = () => {
 
       {/* Charts */}
       <Grid container spacing={3}>
-        {/* Sales Chart */}
-        <Grid item xs={12} md={8}>
+        {/* First row: Sales Chart and Product Category */}
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
           <LineChartContainer
             title={`Monthly Sales (${
               revenueData.length > 0
@@ -64,8 +64,7 @@ const AdminDashboard = () => {
           />
         </Grid>
 
-        {/* Product Category Distribution */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
           <PieChartContainer
             title="Product Categories"
             data={riceTypeData}
@@ -75,8 +74,8 @@ const AdminDashboard = () => {
           />
         </Grid>
 
-        {/* Order Status Distribution */}
-        <Grid item xs={12} md={6}>
+        {/* Second row: Order Status and Product Categories Bar Chart */}
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
           <PieChartContainer
             title="Order Status"
             data={orderStatusData}
@@ -86,8 +85,7 @@ const AdminDashboard = () => {
           />
         </Grid>
 
-        {/* Product Categories Bar Chart */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{ width: "100%" }}>
           <BarChartContainer
             title="Products by Category"
             data={riceTypeData}
