@@ -4,15 +4,10 @@ import {
   Typography,
   IconButton,
   TextField,
-  Card,
   CardMedia,
-  CardContent,
-  Button,
-  Divider,
-  Grid,
-  Paper,
   Tooltip,
-  Fade,
+  Paper,
+  Grid,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -63,225 +58,176 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
 
   return (
     <Paper
-      elevation={isHovered ? 3 : 1}
+      elevation={isHovered ? 2 : 1}
       sx={{
-        mb: 3,
+        mb: 2,
         borderRadius: 2,
         overflow: "hidden",
-        transition: "all 0.3s ease",
-        transform: isHovered ? "translateY(-3px)" : "none",
-        position: "relative",
+        transition: "box-shadow 0.3s ease",
+        border: "1px solid",
+        borderColor: "divider",
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Grid container>
-        {/* Product Image with link to product */}
-        <Grid
-          item
-          xs={4}
-          sm={3}
-          sx={{
-            p: 0,
-            position: "relative",
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "1px",
-              height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.08)",
-            },
-          }}
-        >
+      <Grid container alignItems="center">
+        {/* Hình ảnh sản phẩm - Giảm kích thước xuống */}
+        <Grid item xs={3} sm={2} lg={2} sx={{ p: 1 }}>
           <Box
             component={Link}
             to={`/products/${item.productId}`}
             sx={{
               display: "block",
-              height: "100%",
-              minHeight: { xs: 120, sm: 140 },
-              backgroundColor: "#f5f5f5",
               position: "relative",
-              overflow: "hidden",
-              transition: "all 0.3s ease",
-              "&:hover img": {
-                transform: "scale(1.1)",
-              },
+              height: "80px", // Chiều cao cố định nhỏ hơn
+              width: "100%",
+              bgcolor: "#f5f5f5",
+              borderRadius: 1,
             }}
           >
             <CardMedia
               component="img"
               image={
                 item.imageUrl ||
-                `https://via.placeholder.com/140?text=${item.productName}`
+                `https://via.placeholder.com/80?text=${item.productName}`
               }
               alt={item.productName}
               sx={{
                 width: "100%",
                 height: "100%",
                 objectFit: "contain",
-                transition: "transform 0.6s ease",
               }}
             />
           </Box>
         </Grid>
 
-        {/* Product Details */}
-        <Grid item xs={8} sm={9}>
-          <Box
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-              }}
-            >
-              <Typography
-                component={Link}
-                to={`/products/${item.productId}`}
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  color: "text.primary",
-                  textDecoration: "none",
-                  "&:hover": {
-                    color: "primary.main",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
-                {item.productName}
-              </Typography>
-
-              <Tooltip title="Remove Item" arrow placement="top">
-                <IconButton
-                  color="error"
-                  size="small"
-                  onClick={() => onRemove(item.id)}
-                  sx={{
-                    ml: 1,
-                    opacity: 0.8,
-                    "&:hover": {
-                      opacity: 1,
-                      backgroundColor: "error.light",
-                    },
-                  }}
-                >
-                  <DeleteOutlineIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-
+        {/* Thông tin sản phẩm */}
+        <Grid item xs={9} sm={4} lg={5}>
+          <Box sx={{ px: 1 }}>
             <Typography
-              variant="body2"
-              color="text.secondary"
+              component={Link}
+              to={`/products/${item.productId}`}
+              variant="subtitle1"
               sx={{
-                mb: 2,
+                fontWeight: 600,
+                color: "text.primary",
+                textDecoration: "none",
+                "&:hover": {
+                  color: "primary.main",
+                  textDecoration: "underline",
+                },
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
-                textOverflow: "ellipsis",
               }}
             >
-              Unit Price: {formatCurrency(item.unitPrice)}
+              {item.productName}
             </Typography>
-
-            <Box
-              sx={{
-                mt: "auto",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              {/* Quantity Controls */}
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <IconButton
-                  onClick={handleDecrease}
-                  disabled={isUpdating || quantity <= 1}
-                  size="small"
-                  color="primary"
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "primary.light",
-                      color: "white",
-                    },
-                  }}
-                >
-                  <RemoveCircleOutlineIcon />
-                </IconButton>
-
-                <TextField
-                  variant="outlined"
-                  size="small"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  onBlur={handleBlur}
-                  disabled={isUpdating}
-                  inputProps={{
-                    min: 1,
-                    style: {
-                      textAlign: "center",
-                      width: "40px",
-                      padding: "8px 0",
-                    },
-                  }}
-                  sx={{
-                    mx: 1,
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "primary.light",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "primary.main",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "primary.main",
-                      },
-                    },
-                  }}
-                />
-
-                <IconButton
-                  onClick={handleIncrease}
-                  disabled={isUpdating}
-                  size="small"
-                  color="primary"
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "primary.light",
-                      color: "white",
-                    },
-                  }}
-                >
-                  <AddCircleOutlineIcon />
-                </IconButton>
-              </Box>
-
-              {/* Price */}
-              <Typography
-                variant="h6"
-                color="primary.main"
-                fontWeight="bold"
-                sx={{
-                  transition: "all 0.3s ease",
-                  transform: isHovered ? "scale(1.05)" : "scale(1)",
-                }}
-              >
-                {formatCurrency(item.subtotal)}
-              </Typography>
-            </Box>
+            <Typography variant="body2" color="text.secondary">
+              Đơn giá: {formatCurrency(item.unitPrice)}
+            </Typography>
           </Box>
+        </Grid>
+
+        {/* Điều khiển số lượng - Đảm bảo luôn nằm trên cùng một hàng */}
+        <Grid item xs={6} sm={3} lg={3}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: { xs: "flex-start", sm: "center" },
+              py: 1,
+              px: 1,
+            }}
+          >
+            <IconButton
+              onClick={handleDecrease}
+              disabled={isUpdating || quantity <= 1}
+              size="small"
+              color="primary"
+            >
+              <RemoveCircleOutlineIcon fontSize="small" />
+            </IconButton>
+
+            <TextField
+              variant="outlined"
+              size="small"
+              value={quantity}
+              onChange={handleQuantityChange}
+              onBlur={handleBlur}
+              disabled={isUpdating}
+              inputProps={{
+                min: 1,
+                style: {
+                  textAlign: "center",
+                  width: "32px",
+                  padding: "4px 0",
+                },
+              }}
+              sx={{
+                mx: 0.5,
+                "& .MuiOutlinedInput-root": {
+                  height: 30,
+                  minWidth: 40,
+                  maxWidth: 50,
+                },
+              }}
+            />
+
+            <IconButton
+              onClick={handleIncrease}
+              disabled={isUpdating}
+              size="small"
+              color="primary"
+            >
+              <AddCircleOutlineIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </Grid>
+
+        {/* Thành tiền và nút xóa */}
+        <Grid
+          item
+          xs={6}
+          sm={3}
+          lg={2}
+          sx={{
+            textAlign: "right",
+            pr: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            color="primary.main"
+            fontWeight="bold"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            {formatCurrency(item.subtotal)}
+          </Typography>
+
+          <Typography
+            variant="body1"
+            color="primary.main"
+            fontWeight="bold"
+            sx={{ display: { xs: "block", sm: "none" } }}
+          >
+            {formatCurrency(item.subtotal)}
+          </Typography>
+
+          <Tooltip title="Xóa sản phẩm" arrow>
+            <IconButton
+              color="error"
+              size="small"
+              onClick={() => onRemove(item.id)}
+              edge="end"
+            >
+              <DeleteOutlineIcon />
+            </IconButton>
+          </Tooltip>
         </Grid>
       </Grid>
     </Paper>
