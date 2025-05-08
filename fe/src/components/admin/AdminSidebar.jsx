@@ -1,6 +1,4 @@
-// Modified AdminSidebar.jsx to fix positioning
-import React, { useState, useContext } from "react";
-// Add this to the imports
+import React, { useState, useContext, useEffect } from "react";
 import { alpha } from "@mui/material/styles";
 import {
   Box,
@@ -31,6 +29,7 @@ import GrainIcon from "@mui/icons-material/Grain";
 import PublicIcon from "@mui/icons-material/Public";
 import HomeIcon from "@mui/icons-material/Home";
 
+const HEADER_HEIGHT = 70; // Chiều cao của header (pixel)
 const drawerWidth = 240;
 
 const AdminSidebar = () => {
@@ -39,6 +38,38 @@ const AdminSidebar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(!isMobile);
+  const [drawerHeight, setDrawerHeight] = useState("calc(100vh - 70px)");
+
+  // Hàm tính toán chiều cao chính xác để chạm đến footer
+  useEffect(() => {
+    const calculateHeight = () => {
+      // Lấy chiều cao của trang
+      const pageHeight = document.body.scrollHeight;
+
+      // Lấy vị trí top của footer nếu có
+      const footer = document.querySelector("footer");
+      let footerTop = pageHeight;
+
+      if (footer) {
+        footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      }
+
+      // Tính toán chiều cao cho drawer
+      const calculatedHeight = footerTop - HEADER_HEIGHT;
+      setDrawerHeight(`${calculatedHeight}px`);
+    };
+
+    // Tính chiều cao khi component mount và khi window resize
+    calculateHeight();
+    window.addEventListener("resize", calculateHeight);
+    window.addEventListener("scroll", calculateHeight);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", calculateHeight);
+      window.removeEventListener("scroll", calculateHeight);
+    };
+  }, []);
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -135,7 +166,13 @@ const AdminSidebar = () => {
 
       <Divider />
 
-      <List sx={{ py: 1 }}>
+      <List
+        sx={{
+          py: 1,
+          overflowY: "auto",
+          flexGrow: 1, // Cho phép list mở rộng để lấp đầy khoảng trống
+        }}
+      >
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
             <ListItemButton
@@ -178,8 +215,6 @@ const AdminSidebar = () => {
           </ListItem>
         ))}
       </List>
-
-      <Box sx={{ flexGrow: 1 }} />
 
       <Divider />
 
@@ -228,8 +263,8 @@ const AdminSidebar = () => {
           sx={{
             position: "fixed",
             left: 0,
-            top: 10,
-            zIndex: 1300,
+            top: HEADER_HEIGHT + 10, // Position below the main header
+            zIndex: 1200,
             color: "primary.main",
             bgcolor: "background.paper",
             borderRadius: "0 4px 4px 0",
@@ -256,6 +291,11 @@ const AdminSidebar = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              zIndex: 1200, // Higher than app bar (1100)
+              marginTop: `${HEADER_HEIGHT}px`, // Space for header
+              height: `calc(100vh - ${HEADER_HEIGHT}px)`, // Full height minus header
+              display: "flex",
+              flexDirection: "column",
             },
           }}
         >
@@ -272,8 +312,11 @@ const AdminSidebar = () => {
               width: drawerWidth,
               boxSizing: "border-box",
               borderRight: "1px solid rgba(0, 0, 0, 0.12)",
-              position: "fixed", // Fixed position so it doesn't scroll
-              height: "100vh",
+              marginTop: `${HEADER_HEIGHT}px`, // Space for header
+              height: drawerHeight, // Dynamic height calculated to touch footer
+              zIndex: 1000, // Below app bar (1100)
+              display: "flex",
+              flexDirection: "column",
             },
           }}
           open

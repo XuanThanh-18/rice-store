@@ -1,4 +1,3 @@
-// fe/src/pages/admin/AdminDashboard.jsx
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -8,15 +7,17 @@ import {
   Box,
   CircularProgress,
   Alert,
-  Card,
-  CardContent,
-  Divider,
   Breadcrumbs,
   Link as MuiLink,
   useTheme,
+  Divider,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getDashboardData } from "../../api/orderApi";
+import { getAllUsers } from "../../api/userApi";
+import { getProducts } from "../../api/productApi";
 import { formatCurrency } from "../../utils/formatCurrency";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -25,6 +26,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import dayjs from "dayjs";
 
 // Chart component imports
 import {
@@ -45,19 +47,71 @@ import {
 
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [orderStatusData, setOrderStatusData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
   const theme = useTheme();
 
+  // Colors for charts
+  const COLORS = [
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+    theme.palette.success.main,
+    theme.palette.error.main,
+    theme.palette.warning.main,
+    theme.palette.info.main,
+  ];
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchAllData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getDashboardData();
-        // Access the actual dashboard data inside the response
-        setDashboardData(response.data);
-        console.log("dashborad data : ", response);
+
+        // Fetch dashboard metrics data
+        const orderResponse = await getDashboardData();
+        setDashboardData(orderResponse.data);
+
+        // Fetch users data for user count
+        const usersResponse = await getAllUsers({ page: 0, size: 100 });
+        setUsers(usersResponse.data.content || []);
+
+        // Fetch products data for product count and category distribution
+        const productsResponse = await getProducts({ page: 0, size: 100 });
+        setProducts(productsResponse.content || []);
+
+        // Process order status data for pie chart
+        if (orderResponse.data && orderResponse.data.data) {
+          const statuses = [
+            {
+              name: "Pending",
+              value: orderResponse.data.data.pendingOrders || 0,
+            },
+            {
+              name: "Processing",
+              value: orderResponse.data.data.processingOrders || 0,
+            },
+            {
+              name: "Shipped",
+              value: orderResponse.data.data.shippedOrders || 0,
+            },
+            {
+              name: "Delivered",
+              value: orderResponse.data.data.deliveredOrders || 0,
+            },
+            {
+              name: "Cancelled",
+              value: orderResponse.data.data.cancelledOrders || 0,
+            },
+          ];
+          setOrderStatusData(statuses);
+        }
+
+        // Generate revenue data (in a real app, this would come from API)
+        generateRevenueData();
       } catch (err) {
         setError("Failed to load dashboard data. Please try again later.");
         console.error("Error fetching dashboard data:", err);
@@ -66,42 +120,44 @@ const AdminDashboard = () => {
       }
     };
 
-    fetchDashboardData();
+    fetchAllData();
   }, []);
 
-  // Sample data for charts (in a real app, this would come from the API)
-  const sampleSalesData = [
-    { name: "Jan", sales: 4000 },
-    { name: "Feb", sales: 3000 },
-    { name: "Mar", sales: 2000 },
-    { name: "Apr", sales: 2780 },
-    { name: "May", sales: 1890 },
-    { name: "Jun", sales: 2390 },
-    { name: "Jul", sales: 3490 },
-  ];
+  // Function to generate revenue data based on month using dayjs
+  const generateRevenueData = () => {
+    // Generate last 6 months of data
+    const data = [];
+    for (let i = 5; i >= 0; i--) {
+      // Use dayjs to get proper month names and handle date calculations
+      const month = dayjs().subtract(i, "month");
+      data.push({
+        name: month.format("MMM"),
+        fullDate: month.format("MMM YYYY"),
+        sales: Math.floor(Math.random() * 5000) + 1000,
+      });
+    }
 
-  const COLORS = [
-    theme.palette.primary.main,
-    theme.palette.secondary.main,
-    theme.palette.success.main,
-    theme.palette.error.main,
-  ];
+    setRevenueData(data);
+  };
 
-  // Product category distribution data
-  const productCategoryData = [
-    { name: "Jasmine Rice", value: 400 },
-    { name: "Basmati Rice", value: 300 },
-    { name: "Brown Rice", value: 200 },
-    { name: "Black Rice", value: 100 },
-  ];
+  // Get rice type distribution for charts
+  const getRiceTypeDistribution = () => {
+    if (!products || products.length === 0) return [];
 
-  // Order status distribution data
-  const orderStatusData = [
-    { name: "Pending", value: 10 },
-    { name: "Processing", value: 15 },
-    { name: "Shipped", value: 25 },
-    { name: "Delivered", value: 50 },
-  ];
+    // Count products by rice type
+    const typeCount = {};
+    products.forEach((product) => {
+      if (product.riceType) {
+        typeCount[product.riceType] = (typeCount[product.riceType] || 0) + 1;
+      }
+    });
+
+    // Convert to array for chart data
+    return Object.keys(typeCount).map((type) => ({
+      name: type,
+      value: typeCount[type],
+    }));
+  };
 
   if (loading) {
     return (
@@ -116,17 +172,20 @@ const AdminDashboard = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
-    );
-  }
+  // Calculate totals and metrics
+  const totalCustomers = users.length;
+  const totalProducts = products.length;
+  const totalOrders = orderStatusData.reduce(
+    (acc, item) => acc + item.value,
+    0
+  );
+  const totalRevenue = dashboardData?.data?.totalRevenue || 0;
 
   return (
     <Box sx={{ display: "flex" }}>
       <AdminSidebar />
+
+      {/* Main content area with proper margin to avoid overlap */}
       <Box
         component="main"
         sx={{
@@ -134,6 +193,8 @@ const AdminDashboard = () => {
           p: 3,
           bgcolor: "background.default",
           minHeight: "100vh",
+          width: { xs: "100%", md: "calc(100% - 240px)" },
+          // marginLeft: { xs: 0, md: "240px" }, // Add proper margin to prevent overlap
         }}
       >
         <Container maxWidth="xl">
@@ -157,6 +218,13 @@ const AdminDashboard = () => {
             </Typography>
           </Box>
 
+          {/* Error Message */}
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
           {/* Stats Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
@@ -171,7 +239,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <ShoppingBagIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.data?.totalOrders || 253}
+                    {totalOrders}
                   </Typography>
                   <Typography variant="body2">Total Orders</Typography>
                 </CardContent>
@@ -189,7 +257,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <PeopleIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.data?.totalCustomers || 120}
+                    {totalCustomers}
                   </Typography>
                   <Typography variant="body2">Total Customers</Typography>
                 </CardContent>
@@ -207,7 +275,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <InventoryIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {dashboardData?.data?.totalProducts || 45}
+                    {totalProducts}
                   </Typography>
                   <Typography variant="body2">Total Products</Typography>
                 </CardContent>
@@ -225,7 +293,7 @@ const AdminDashboard = () => {
                 <CardContent>
                   <LocalShippingIcon fontSize="large" />
                   <Typography variant="h5" component="div" sx={{ mt: 2 }}>
-                    {formatCurrency(dashboardData?.data?.totalRevenue || 25650)}
+                    {formatCurrency(totalRevenue)}
                   </Typography>
                   <Typography variant="body2">Total Revenue</Typography>
                 </CardContent>
@@ -252,12 +320,18 @@ const AdminDashboard = () => {
                   gutterBottom
                   sx={{ px: 1 }}
                 >
-                  Monthly Sales
+                  Monthly Sales (
+                  {revenueData.length > 0
+                    ? `${revenueData[0].fullDate} - ${
+                        revenueData[revenueData.length - 1].fullDate
+                      }`
+                    : "Last 6 Months"}
+                  )
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 <ResponsiveContainer width="100%" height="90%">
                   <LineChart
-                    data={sampleSalesData}
+                    data={revenueData}
                     margin={{
                       top: 5,
                       right: 30,
@@ -268,7 +342,7 @@ const AdminDashboard = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip formatter={(value) => formatCurrency(value)} />
                     <Legend />
                     <Line
                       type="monotone"
@@ -276,6 +350,7 @@ const AdminDashboard = () => {
                       stroke={theme.palette.primary.main}
                       strokeWidth={2}
                       activeDot={{ r: 8 }}
+                      name="Revenue"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -307,18 +382,18 @@ const AdminDashboard = () => {
                     <Pie
                       dataKey="value"
                       isAnimationActive={true}
-                      data={productCategoryData}
+                      data={getRiceTypeDistribution()}
                       outerRadius={80}
-                      label
+                      label={(entry) => entry.name}
                     >
-                      {productCategoryData.map((entry, index) => (
+                      {getRiceTypeDistribution().map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
                         />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip formatter={(value) => [value, "Products"]} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
@@ -354,7 +429,7 @@ const AdminDashboard = () => {
                       cx="50%"
                       cy="50%"
                       outerRadius={80}
-                      label
+                      label={(entry) => entry.name}
                     >
                       {orderStatusData.map((entry, index) => (
                         <Cell
@@ -363,14 +438,14 @@ const AdminDashboard = () => {
                         />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip formatter={(value) => [value, "Orders"]} />
                     <Legend />
                   </PieChart>
                 </ResponsiveContainer>
               </Paper>
             </Grid>
 
-            {/* Recent Sales Performance */}
+            {/* Product Categories Bar Chart */}
             <Grid item xs={12} md={6}>
               <Paper
                 sx={{
@@ -387,12 +462,12 @@ const AdminDashboard = () => {
                   gutterBottom
                   sx={{ px: 1 }}
                 >
-                  Sales by Category
+                  Products by Category
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 <ResponsiveContainer width="100%" height="85%">
                   <BarChart
-                    data={productCategoryData}
+                    data={getRiceTypeDistribution()}
                     margin={{
                       top: 5,
                       right: 30,
@@ -407,7 +482,7 @@ const AdminDashboard = () => {
                     <Legend />
                     <Bar
                       dataKey="value"
-                      name="Sales"
+                      name="Products"
                       fill={theme.palette.primary.main}
                     />
                   </BarChart>
