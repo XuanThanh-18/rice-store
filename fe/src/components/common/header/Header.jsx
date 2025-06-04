@@ -42,18 +42,28 @@ const Header = () => {
 
   // Navigation links
   const navigationLinks = [
-    { name: "Home", path: "/", icon: <HomeIcon /> },
-    { name: "Products", path: "/products", icon: <RiceBowlIcon /> },
-    { name: "About", path: "/about", icon: <InfoIcon /> },
-    { name: "Contact", path: "/contact", icon: <LocalShippingIcon /> },
+    { name: "Trang chủ", path: "/", icon: <HomeIcon /> },
+    { name: "Sản phẩm", path: "/products", icon: <RiceBowlIcon /> },
+    { name: "Giới thiệu", path: "/about", icon: <InfoIcon /> },
+    { name: "Tương tác", path: "/contact", icon: <LocalShippingIcon /> },
   ];
 
   // User menu items
   const userMenuItems = [
-    { name: "Profile", path: "/profile", icon: <PersonIcon />, auth: true },
-    { name: "My Orders", path: "/orders", icon: <ReceiptIcon />, auth: true },
     {
-      name: "Admin Dashboard",
+      name: "Thông tin cá nhân",
+      path: "/profile",
+      icon: <PersonIcon />,
+      auth: true,
+    },
+    {
+      name: "Đơn hàng của tôi",
+      path: "/orders",
+      icon: <ReceiptIcon />,
+      auth: true,
+    },
+    {
+      name: "Tổng quan quản trị",
       path: "/admin/dashboard",
       icon: <AdminPanelSettingsIcon />,
       admin: true,

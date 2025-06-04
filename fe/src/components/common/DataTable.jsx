@@ -27,7 +27,7 @@ const DataTable = ({
   data = [],
   renderRow,
   loading = false,
-  emptyMessage = "No data found",
+  emptyMessage = "Ko tìm thấy dữ liệu",
   maxHeight = "calc(100vh - 280px)",
 }) => {
   return (

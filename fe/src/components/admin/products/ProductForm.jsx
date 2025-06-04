@@ -278,7 +278,7 @@ const ProductForm = ({ product, onSubmit }) => {
                   }
                   sx={{ py: 1.2, px: 3 }}
                 >
-                  {product ? "Update Product" : "Save Product"}
+                  {product ? "Cập nhật sản phẩm" : "Lưu sản phẩm"}
                 </Button>
               </Box>
             </Grid>

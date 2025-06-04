@@ -249,10 +249,10 @@ const ProductFilterBar = ({ filters, onFilterChange }) => {
                   <MenuItem value="price,desc">Price (High to Low)</MenuItem>
                   <MenuItem value="createdAt,desc">Newest First</MenuItem>
                   <MenuItem value="stockQuantity,asc">
-                    Stock (Low to High)
+                    Tồn kho (Thấp đến cao)
                   </MenuItem>
                   <MenuItem value="stockQuantity,desc">
-                    Stock (High to Low)
+                    Tồn kho (Cao đến thấp)
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -267,14 +267,14 @@ const ProductFilterBar = ({ filters, onFilterChange }) => {
               onClick={handleResetFilters}
               sx={{ mr: 2 }}
             >
-              Reset
+              Khôi phục
             </Button>
             <Button
               variant="contained"
               color="primary"
               onClick={handleApplyFilters}
             >
-              Apply Filters
+              ÁP dụng lọc
             </Button>
           </Box>
         </AccordionDetails>

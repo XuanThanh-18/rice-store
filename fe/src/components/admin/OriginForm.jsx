@@ -14,16 +14,10 @@ import SaveIcon from "@mui/icons-material/Save";
 // Origin validation schema
 const originValidationSchema = Yup.object({
   name: Yup.string()
-    .required("Name is required")
-    .max(50, "Name must be less than 50 characters"),
-  description: Yup.string().max(
-    500,
-    "Description must be less than 500 characters"
-  ),
-  countryCode: Yup.string().length(
-    2,
-    "Country code must be exactly 2 characters"
-  ),
+    .required("Bạn phải nhập tên")
+    .max(50, "Tên không quá 50 kí tự"),
+  description: Yup.string().max(500, "Mô tả không quá 500 ký tự"),
+  countryCode: Yup.string().length(2, "Mã quốc gia chỉ 2 kí tự"),
 });
 
 const OriginForm = ({ origin, onSubmit }) => {
@@ -42,7 +36,7 @@ const OriginForm = ({ origin, onSubmit }) => {
     } catch (err) {
       setSubmitError(
         err.response?.data?.message ||
-          "An error occurred while saving the origin. Please try again."
+          "Một lỗi xảy ra khi lưu xuất xứ. Hãy thử lại !"
       );
       console.error("Error saving origin:", err);
     } finally {
@@ -70,7 +64,7 @@ const OriginForm = ({ origin, onSubmit }) => {
                 as={TextField}
                 fullWidth
                 name="name"
-                label="Origin Name"
+                label="Tên xuất xứ"
                 variant="outlined"
                 error={touched.name && Boolean(errors.name)}
                 helperText={touched.name && errors.name}
@@ -82,7 +76,7 @@ const OriginForm = ({ origin, onSubmit }) => {
                 as={TextField}
                 fullWidth
                 name="countryCode"
-                label="Country Code (2 letters)"
+                label="Mã quốc gia (2 ký tự)"
                 variant="outlined"
                 error={touched.countryCode && Boolean(errors.countryCode)}
                 helperText={touched.countryCode && errors.countryCode}
@@ -95,7 +89,7 @@ const OriginForm = ({ origin, onSubmit }) => {
                 as={TextField}
                 fullWidth
                 name="description"
-                label="Description"
+                label="Mô tả"
                 multiline
                 rows={4}
                 variant="outlined"
@@ -116,7 +110,7 @@ const OriginForm = ({ origin, onSubmit }) => {
                   }
                   sx={{ py: 1.2, px: 3 }}
                 >
-                  {origin ? "Update Origin" : "Save Origin"}
+                  {origin ? "Cập nhật xuất xứ" : "Lưu xuất xứ"}
                 </Button>
               </Box>
             </Grid>

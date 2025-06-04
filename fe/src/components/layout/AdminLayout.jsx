@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import AdminSidebar from "../admin/AdminSidebar";
 
 // Constants for spacing
-const HEADER_HEIGHT = 70; // Height of your header in pixels
+const HEADER_HEIGHT = 0; // Height of your header in pixels
 const FOOTER_HEIGHT = 100; // Approximate height of your footer in pixels
 const SIDEBAR_WIDTH = 240; // Width of the sidebar
 

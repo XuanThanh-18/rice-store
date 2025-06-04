@@ -10,7 +10,7 @@ const ProductImagePreview = ({ imageUrl, productName = "Product" }) => {
   return (
     <Box>
       <Typography variant="subtitle2" gutterBottom>
-        Image Preview
+        Xem trước ảnh
       </Typography>
 
       {imageUrl ? (
@@ -47,7 +47,7 @@ const ProductImagePreview = ({ imageUrl, productName = "Product" }) => {
         >
           <ImageIcon sx={{ fontSize: 40, color: "text.secondary", mb: 1 }} />
           <Typography variant="body2" color="text.secondary">
-            No image URL provided
+            Chưa điền đường dẫn ảnh
           </Typography>
         </Paper>
       )}

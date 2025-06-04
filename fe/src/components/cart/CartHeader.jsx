@@ -16,7 +16,7 @@ const CartHeader = ({ itemCount, onClearCart, clearingCart }) => {
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <ShoppingCartIcon sx={{ mr: 1, fontSize: 28 }} />
         <Typography variant="h4" component="h1">
-          Shopping Cart
+          Giỏ hàng mua sắm
         </Typography>
         {itemCount > 0 && (
           <Typography variant="subtitle1" color="text.secondary" sx={{ ml: 2 }}>
@@ -33,7 +33,7 @@ const CartHeader = ({ itemCount, onClearCart, clearingCart }) => {
           onClick={onClearCart}
           disabled={clearingCart}
         >
-          Clear Cart
+          Xóa giỏ hàng
         </Button>
       )}
     </Box>

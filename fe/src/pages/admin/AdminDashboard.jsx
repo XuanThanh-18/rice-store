@@ -48,17 +48,17 @@ const AdminDashboard = () => {
         {/* First row: Sales Chart and Product Category */}
         <Grid item xs={12} md={6} sx={{ width: "100%" }}>
           <LineChartContainer
-            title={`Monthly Sales (${
+            title={`Doanh thu hàng tháng (${
               revenueData.length > 0
                 ? `${revenueData[0].fullDate} - ${
                     revenueData[revenueData.length - 1].fullDate
                   }`
-                : "Last 6 Months"
+                : "Sau 6 tháng"
             })`}
             data={revenueData}
             xAxisDataKey="name"
             lineDataKey="sales"
-            lineName="Revenue"
+            lineName="Doanh thu"
             tooltipFormatter={(value) => formatCurrency(value)}
             loading={loading}
           />

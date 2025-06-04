@@ -32,12 +32,16 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const checkoutValidationSchema = Yup.object({
-  shippingAddress: Yup.string().required("Shipping address is required"),
-  billingAddress: Yup.string().required("Billing address is required"),
+  shippingAddress: Yup.string().required(
+    "Địa chỉ thanh toán không được để trống"
+  ),
+  billingAddress: Yup.string().required("Tòa nhà thanh toán ko được để trống"),
   phoneNumber: Yup.string()
-    .matches(/^[0-9+\- ]+$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  paymentMethod: Yup.string().required("Payment method is required"),
+    .matches(/^[0-9+\- ]+$/, "Số điện thoại không hợp lệ")
+    .required("Số điện thoại không được để trống"),
+  paymentMethod: Yup.string().required(
+    "Phương thức thanh toán không được để trống"
+  ),
   useShippingAsBilling: Yup.boolean(),
   notes: Yup.string(),
 });
@@ -254,7 +258,7 @@ const CheckoutForm = ({ cart, onCheckout, loading }) => {
                 {loading ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  `Place Order (${formatCurrency(finalTotal)})`
+                  `Đặt hàng (${formatCurrency(finalTotal)})`
                 )}
               </Button>
             </Grid>

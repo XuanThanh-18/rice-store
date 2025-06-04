@@ -20,7 +20,7 @@ const AdditionalNotesForm = ({ errors, touched }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="text.secondary">
-          Add any additional information for your order
+          Thêm bất kỳ thông tin bổ sung nào cho đơn hàng của bạn
         </Typography>
       </Grid>
 
@@ -31,7 +31,7 @@ const AdditionalNotesForm = ({ errors, touched }) => {
           multiline
           rows={4}
           name="notes"
-          placeholder="Add any specific delivery instructions, preferences, or other important information..."
+          placeholder="Thêm bất kỳ hướng dẫn giao hàng cụ thể nào, sở thích hoặc thông tin quan trọng khác..."
           variant="outlined"
           error={touched.notes && Boolean(errors.notes)}
           helperText={touched.notes && errors.notes}
@@ -44,8 +44,8 @@ const AdditionalNotesForm = ({ errors, touched }) => {
           }}
         />
         <FormHelperText>
-          Optional: You can leave this field empty if there are no special
-          instructions
+          Tùy chọn: Bạn có thể để trường này trống nếu không có hướng dẫn đặc
+          biệt nào.
         </FormHelperText>
       </Grid>
 
@@ -70,30 +70,30 @@ const AdditionalNotesForm = ({ errors, touched }) => {
             />
             <Box>
               <Typography variant="body2" color="info.dark" gutterBottom>
-                Examples of information you might want to include:
+                Ví dụ về thông tin bạn có thể muốn bao gồm:
               </Typography>
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
                 <Chip
-                  label="Delivery time preferences"
+                  label="Sở thích về thời gian giao hàng"
                   size="small"
                   variant="outlined"
                   color="info"
                 />
                 <Chip
-                  label="Building access codes"
+                  label="Mã truy cập tòa nhà"
                   size="small"
                   variant="outlined"
                   color="info"
                 />
                 <Chip
-                  label="Gift message"
+                  label="Lời nhắn gửi"
                   size="small"
                   variant="outlined"
                   color="info"
                 />
                 <Chip
-                  label="Special handling"
+                  label="Xử lý đặc biệt"
                   size="small"
                   variant="outlined"
                   color="info"
@@ -101,8 +101,8 @@ const AdditionalNotesForm = ({ errors, touched }) => {
               </Box>
 
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Our delivery team will do their best to accommodate your
-                requests.
+                Nhóm giao hàng của chúng tôi sẽ cố gắng hết sức để đáp ứng các
+                yêu cầu của bạn.
               </Typography>
             </Box>
           </Box>

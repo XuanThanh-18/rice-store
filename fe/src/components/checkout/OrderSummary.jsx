@@ -12,7 +12,7 @@ const OrderSummary = ({ cart }) => {
     <>
       <Grid item xs={12} sx={{ mt: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Order Summary
+          Tổng quan đơn hàng
         </Typography>
         <Divider sx={{ mb: 2 }} />
       </Grid>
@@ -22,7 +22,7 @@ const OrderSummary = ({ cart }) => {
           <Grid container spacing={2}>
             <Grid item xs={8}>
               <Typography variant="body1">
-                Subtotal ({items.length} items):
+                Tổng phụ ({items.length} items):
               </Typography>
             </Grid>
             <Grid item xs={4} sx={{ textAlign: "right" }}>
@@ -32,7 +32,7 @@ const OrderSummary = ({ cart }) => {
             </Grid>
 
             <Grid item xs={8}>
-              <Typography variant="body1">Shipping:</Typography>
+              <Typography variant="body1">Giao hàng:</Typography>
             </Grid>
             <Grid item xs={4} sx={{ textAlign: "right" }}>
               <Typography variant="body1">
@@ -41,7 +41,7 @@ const OrderSummary = ({ cart }) => {
             </Grid>
 
             <Grid item xs={8}>
-              <Typography variant="body1">Estimated Tax:</Typography>
+              <Typography variant="body1">Thuế dự kiến:</Typography>
             </Grid>
             <Grid item xs={4} sx={{ textAlign: "right" }}>
               <Typography variant="body1">{formatCurrency(tax)}</Typography>
@@ -52,7 +52,7 @@ const OrderSummary = ({ cart }) => {
             </Grid>
 
             <Grid item xs={8}>
-              <Typography variant="h6">Total:</Typography>
+              <Typography variant="h6">TỔNG:</Typography>
             </Grid>
             <Grid item xs={4} sx={{ textAlign: "right" }}>
               <Typography variant="h6" color="primary.main">

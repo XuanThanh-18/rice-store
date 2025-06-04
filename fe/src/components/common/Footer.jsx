@@ -60,12 +60,12 @@ const Footer = () => {
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     if (!email) {
-      toast.warn("Please enter your email address");
+      toast.warn("Làm ơn hãy nhập Email của bạn");
       return;
     }
 
     // In a real app, this would call an API to subscribe the user
-    toast.success(`Thank you! ${email} has been subscribed to our newsletter.`);
+    toast.success(`Cảm ơn! ${email} đã đăng kí`);
     setEmail("");
   };
 
@@ -84,25 +84,25 @@ const Footer = () => {
       name: origin.name,
       path: `/products?origin=${encodeURIComponent(origin.name)}`,
     })),
-    { name: "All Origins", path: "/products" },
+    { name: "Xuất xứ", path: "/products" },
   ];
 
   // Customer service links (not dynamic, but could be in the future)
   const customerServiceLinks = [
-    { name: "My Account", path: "/profile" },
-    { name: "Track Order", path: "/orders" },
-    { name: "Shipping Policy", path: "/shipping" },
-    { name: "Returns & Refunds", path: "/returns" },
+    { name: "Tài khoản của tôi", path: "/profile" },
+    { name: "Đơn hàng", path: "/orders" },
+    { name: "Chính sách giao hàng", path: "/shipping" },
+    { name: "Trở về", path: "/returns" },
     { name: "FAQ", path: "/faq" },
   ];
 
   // Company info links
   const companyLinks = [
-    { name: "About Us", path: "/about" },
-    { name: "Contact Us", path: "/contact" },
+    { name: "Giới thiệu", path: "/about" },
+    { name: "Tương tác", path: "/contact" },
     { name: "Blog", path: "/blog" },
-    { name: "Terms & Conditions", path: "/terms" },
-    { name: "Privacy Policy", path: "/privacy" },
+    { name: "Chính sách & Điều kiện", path: "/terms" },
+    { name: "Chính sách cơ bản", path: "/privacy" },
   ];
 
   return (
@@ -175,7 +175,7 @@ const Footer = () => {
               {/* Dynamic Rice Type Links */}
               <Grid item xs={12} sm={6} md={2}>
                 <Typography variant="h6" gutterBottom>
-                  Rice Types
+                  Loại gạo
                 </Typography>
                 {loading ? (
                   <CircularProgress size={20} color="inherit" />
@@ -201,7 +201,7 @@ const Footer = () => {
               {/* Dynamic Origin Links */}
               <Grid item xs={12} sm={6} md={2}>
                 <Typography variant="h6" gutterBottom>
-                  Shop by Origin
+                  Xuất xứ
                 </Typography>
                 {loading ? (
                   <CircularProgress size={20} color="inherit" />
@@ -227,7 +227,7 @@ const Footer = () => {
               {/* Customer Service Links */}
               <Grid item xs={12} sm={6} md={2}>
                 <Typography variant="h6" gutterBottom>
-                  Customer Service
+                  Dịch vụ khách hàng
                 </Typography>
                 <Box component="ul" sx={{ p: 0, m: 0, listStyle: "none" }}>
                   {customerServiceLinks.map((link) => (
@@ -249,7 +249,7 @@ const Footer = () => {
               {/* Company Links */}
               <Grid item xs={12} sm={6} md={2}>
                 <Typography variant="h6" gutterBottom>
-                  Company
+                  Công ty
                 </Typography>
                 <Box component="ul" sx={{ p: 0, m: 0, listStyle: "none" }}>
                   {companyLinks.map((link) => (

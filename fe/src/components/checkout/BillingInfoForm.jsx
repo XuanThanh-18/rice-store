@@ -13,7 +13,6 @@ import {
   Fade,
 } from "@mui/material";
 import { Field } from "formik";
-import HomeIcon from "@mui/icons-material/Home";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SyncAltIcon from "@mui/icons-material/SyncAlt";
 
@@ -22,7 +21,7 @@ const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="text.secondary">
-          Enter billing address or use shipping information
+          Nhập địa chỉ thanh toán hoặc sử dụng thông tin giao hàng
         </Typography>
       </Grid>
 
@@ -78,7 +77,7 @@ const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
                       : "text.primary",
                   }}
                 >
-                  Use shipping address as billing address
+                  Sử dụng địa chỉ giao hàng làm địa chỉ thanh toán
                 </Typography>
               </Box>
             }
@@ -96,7 +95,7 @@ const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
                 multiline
                 rows={4}
                 name="billingAddress"
-                label="Billing Address"
+                label="Địa chỉ thanh toán"
                 variant="outlined"
                 error={touched.billingAddress && Boolean(errors.billingAddress)}
                 helperText={touched.billingAddress && errors.billingAddress}
@@ -107,10 +106,10 @@ const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
                     </InputAdornment>
                   ),
                 }}
-                placeholder="Enter your billing address"
+                placeholder="Nhập địa chỉ thanh toán của bạn"
               />
               <FormHelperText>
-                Please include street address, city, state, and ZIP code
+                Vui lòng bao gồm địa chỉ đường, thành phố, tiểu bang và mã ZIP
               </FormHelperText>
             </Grid>
           </Grid>
@@ -130,7 +129,7 @@ const BillingInfoForm = ({ values, setFieldValue, errors, touched }) => {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              Billing address is the same as your shipping address:
+              Địa chỉ thanh toán giống như địa chỉ giao hàng của bạn:
             </Typography>
             <Typography
               variant="body1"

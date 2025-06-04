@@ -29,7 +29,7 @@ const DashboardLayout = ({
   children,
   loading = false,
   error = null,
-  title = "Admin Dashboard",
+  title = "TỔng quan quản trị",
 }) => {
   // If in loading state, show a centered spinner
   if (loading) {
@@ -57,9 +57,9 @@ const DashboardLayout = ({
           sx={{ mb: 3, mt: 2 }}
         >
           <MuiLink component={Link} to="/" color="inherit">
-            Home
+            Trang chủ
           </MuiLink>
-          <Typography color="text.primary">Admin Dashboard</Typography>
+          <Typography color="text.primary">Quản trị tổng quan</Typography>
         </Breadcrumbs>
 
         {/* Dashboard Title */}

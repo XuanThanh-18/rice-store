@@ -30,7 +30,7 @@ const PageHeader = ({
         sx={{ mb: 3, mt: 2 }}
       >
         <MuiLink component={Link} to="/" color="inherit">
-          Home
+          Trang chủ
         </MuiLink>
         {breadcrumbs.map((crumb, index) =>
           crumb.link ? (

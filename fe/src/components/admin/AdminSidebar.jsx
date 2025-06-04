@@ -77,37 +77,37 @@ const AdminSidebar = () => {
 
   const menuItems = [
     {
-      text: "Dashboard",
+      text: "Tổng quan",
       icon: <DashboardIcon />,
       path: "/admin/dashboard",
     },
     {
-      text: "Products",
+      text: "Sản phẩm",
       icon: <InventoryIcon />,
       path: "/admin/products",
     },
     {
-      text: "Rice Types",
+      text: "Loại gạo",
       icon: <GrainIcon />,
       path: "/admin/rice-types",
     },
     {
-      text: "Origins",
+      text: "Xuất xứ",
       icon: <PublicIcon />,
       path: "/admin/origins",
     },
     {
-      text: "Orders",
+      text: "Đơn hàng",
       icon: <ShoppingCartIcon />,
       path: "/admin/orders",
     },
     {
-      text: "Users",
+      text: "Người dùng",
       icon: <PeopleIcon />,
       path: "/admin/users",
     },
     {
-      text: "Back to Shop",
+      text: "Trở lại cửa hàng",
       icon: <HomeIcon />,
       path: "/",
     },
@@ -128,7 +128,7 @@ const AdminSidebar = () => {
       >
         <RiceBowlIcon sx={{ mr: 1, fontSize: 30 }} />
         <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
-          Rice Shop Admin
+          Quản trị
         </Typography>
         {isMobile && (
           <IconButton
@@ -159,7 +159,7 @@ const AdminSidebar = () => {
             {user?.fullName || user?.username}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
-            Administrator
+            Quản trị viên
           </Typography>
         </Box>
       </Box>

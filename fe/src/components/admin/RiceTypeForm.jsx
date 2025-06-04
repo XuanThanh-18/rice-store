@@ -14,12 +14,9 @@ import SaveIcon from "@mui/icons-material/Save";
 // Rice Type validation schema
 const riceTypeValidationSchema = Yup.object({
   name: Yup.string()
-    .required("Name is required")
-    .max(50, "Name must be less than 50 characters"),
-  description: Yup.string().max(
-    500,
-    "Description must be less than 500 characters"
-  ),
+    .required("Tên không được để trống")
+    .max(50, "Tên khống quá 50 ký tự"),
+  description: Yup.string().max(500, "Mô tả không quá 500 ký tự"),
 });
 
 const RiceTypeForm = ({ riceType, onSubmit }) => {
@@ -37,7 +34,7 @@ const RiceTypeForm = ({ riceType, onSubmit }) => {
     } catch (err) {
       setSubmitError(
         err.response?.data?.message ||
-          "An error occurred while saving the rice type. Please try again."
+          "Có lỗi xảy ra khi lưu loại gạo. Hãy thử lại!"
       );
       console.error("Error saving rice type:", err);
     } finally {
@@ -65,7 +62,7 @@ const RiceTypeForm = ({ riceType, onSubmit }) => {
                 as={TextField}
                 fullWidth
                 name="name"
-                label="Rice Type Name"
+                label="Tên loại gạo"
                 variant="outlined"
                 error={touched.name && Boolean(errors.name)}
                 helperText={touched.name && errors.name}
@@ -77,7 +74,7 @@ const RiceTypeForm = ({ riceType, onSubmit }) => {
                 as={TextField}
                 fullWidth
                 name="description"
-                label="Description"
+                label="Mô tả"
                 multiline
                 rows={4}
                 variant="outlined"
@@ -98,7 +95,7 @@ const RiceTypeForm = ({ riceType, onSubmit }) => {
                   }
                   sx={{ py: 1.2, px: 3 }}
                 >
-                  {riceType ? "Update Rice Type" : "Save Rice Type"}
+                  {riceType ? "Cập nhật loại gạo" : "Lưu loại gạo"}
                 </Button>
               </Box>
             </Grid>

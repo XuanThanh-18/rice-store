@@ -66,7 +66,7 @@ const CartSummary = ({ cart }) => {
             <ListItemText
               primary={
                 <Typography variant="body1" fontWeight="medium">
-                  Subtotal
+                  Tổng phụ
                 </Typography>
               }
               secondary={`${totalItems} items`}
@@ -98,7 +98,7 @@ const CartSummary = ({ cart }) => {
                     sx={{ mt: 0.5, height: 24, fontSize: "0.75rem" }}
                   />
                 ) : (
-                  "Standard shipping"
+                  "Giao hàng tiêu chuẩn"
                 )
               }
             />
@@ -114,7 +114,7 @@ const CartSummary = ({ cart }) => {
                   <PaymentIcon
                     sx={{ fontSize: 18, mr: 1, color: "text.secondary" }}
                   />
-                  <Typography variant="body1">Estimated Tax</Typography>
+                  <Typography variant="body1">Thuế dự kiến</Typography>
                 </Box>
               }
             />
@@ -133,7 +133,7 @@ const CartSummary = ({ cart }) => {
             <ListItemText
               primary={
                 <Typography variant="h6" fontWeight="bold">
-                  Total
+                  Tổng
                 </Typography>
               }
             />
@@ -182,7 +182,7 @@ const CartSummary = ({ cart }) => {
               transition: "all 0.3s",
             }}
           >
-            Proceed to Checkout
+            Tiến hành thanh toán
           </Button>
 
           <Button
@@ -194,7 +194,7 @@ const CartSummary = ({ cart }) => {
             fullWidth
             sx={{ mt: 2 }}
           >
-            Continue Shopping
+            Tiếp tục mua sắm
           </Button>
         </Box>
 
@@ -209,12 +209,13 @@ const CartSummary = ({ cart }) => {
           >
             <VerifiedIcon sx={{ fontSize: 20, mr: 1 }} />
             <Typography variant="subtitle2" color="success.main">
-              Free shipping on orders over $50
+              Miễn phí ship cho đơn hàng trên 50000
             </Typography>
           </Box>
 
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            All orders are processed and shipped within 1-2 business days.
+            Tất cả các đơn hàng được xử lý và vận chuyển trong vòng 1-2 ngày làm
+            việc.
           </Typography>
         </Box>
       </CardContent>

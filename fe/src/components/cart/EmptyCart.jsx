@@ -51,14 +51,15 @@ const EmptyCart = () => {
             <ShoppingCartIcon sx={{ fontSize: 80, mb: 2, opacity: 0.9 }} />
 
             <Typography variant="h5" gutterBottom fontWeight="bold">
-              Your cart is empty
+              Giỏ hàng của bạn đang rỗng
             </Typography>
 
             <Typography
               variant="body2"
               sx={{ maxWidth: 280, mx: "auto", mb: 3 }}
             >
-              Looks like you haven't added any rice products to your cart yet!
+              Có vẻ như bạn chưa thêm bất kỳ sản phẩm gạo nào vào giỏ hàng của
+              mình!
             </Typography>
           </Box>
 
@@ -93,7 +94,7 @@ const EmptyCart = () => {
               color="primary.main"
               fontWeight="bold"
             >
-              Discover Premium Rice Varieties
+              Khám Phá Các Giống Gạo Cao Cấp
             </Typography>
 
             <Typography
@@ -102,9 +103,9 @@ const EmptyCart = () => {
               color="text.secondary"
               sx={{ mb: 4 }}
             >
-              Explore our selection of high-quality rice products from around
-              the world. We have numerous rice varieties to suit every taste and
-              recipe.
+              Khám phá bộ sưu tập sản phẩm gạo chất lượng cao của chúng tôi từ
+              khắp nơi trên thế giới. Chúng tôi có nhiều loại gạo để phù hợp với
+              mọi khẩu vị và công thức.
             </Typography>
 
             <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -127,7 +128,7 @@ const EmptyCart = () => {
                   transition: "all 0.3s",
                 }}
               >
-                Start Shopping
+                Bắt đầu mua sắm
               </Button>
             </Box>
 
@@ -143,7 +144,7 @@ const EmptyCart = () => {
               }}
             >
               <Typography variant="body2" color="text.secondary">
-                Have questions about our products?
+                Có câu hỏi gì về sản phẩm của chúng tôi không?
               </Typography>
               <Button
                 component={Link}
@@ -152,7 +153,7 @@ const EmptyCart = () => {
                 color="primary"
                 sx={{ ml: 1, textDecoration: "underline" }}
               >
-                Contact Us
+                Tương tác với chúng tôi
               </Button>
             </Box>
           </CardContent>

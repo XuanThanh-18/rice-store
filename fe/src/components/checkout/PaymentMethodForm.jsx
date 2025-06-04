@@ -46,7 +46,7 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="text.secondary">
-          Select your preferred payment method
+          Chọn phương thức thanh toán ưa thích của bạn
         </Typography>
       </Grid>
 
@@ -117,7 +117,7 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                               : "text.primary",
                         }}
                       >
-                        Credit Card
+                        Thanh toán thẻ
                       </Typography>
                       <Box
                         component="img"
@@ -141,7 +141,7 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                       <Grid item xs={12}>
                         <TextField
                           fullWidth
-                          label="Card Number"
+                          label="Số thẻ"
                           placeholder="1234 5678 9012 3456"
                           variant="outlined"
                           InputProps={{
@@ -156,7 +156,7 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
-                          label="Expiration Date"
+                          label="Ngày gia hạn"
                           placeholder="MM/YY"
                           variant="outlined"
                         />
@@ -256,8 +256,8 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                 <Collapse in={showPaypalFields} timeout={500}>
                   <Box sx={{ mt: 2, ml: 4 }}>
                     <Alert severity="info" sx={{ mb: 2 }}>
-                      You will be redirected to PayPal to complete your payment
-                      securely.
+                      Bạn sẽ được chuyển hướng tới PayPal để hoàn tất thanh toán
+                      của bạn một cách an toàn.
                     </Alert>
                   </Box>
                 </Collapse>
@@ -308,7 +308,7 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                               : "text.primary",
                         }}
                       >
-                        Bank Transfer
+                        Phương thức chuyển tiền
                       </Typography>
                     </Box>
                   }
@@ -318,8 +318,9 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
                 <Collapse in={showBankFields} timeout={500}>
                   <Box sx={{ mt: 2, ml: 4 }}>
                     <Alert severity="info" sx={{ mb: 2 }}>
-                      Your order will be processed once we receive your payment.
-                      You will receive bank details after placing the order.
+                      Đơn hàng của bạn sẽ được xử lý ngay khi chúng tôi nhận
+                      được thanh toán của bạn. Bạn sẽ nhận được thông tin ngân
+                      hàng sau khi đặt hàng.
                     </Alert>
                   </Box>
                 </Collapse>
@@ -347,8 +348,8 @@ const PaymentMethodForm = ({ values, setFieldValue, errors, touched }) => {
         >
           <SecurityIcon color="success" sx={{ mr: 1.5 }} />
           <Typography variant="body2" color="success.dark">
-            All payment information is encrypted and secure. We never store your
-            complete payment details.
+            Tất cả thông tin thanh toán đều được mã hóa và an toàn. Chúng tôi
+            không bao giờ lưu trữ chi tiết thanh toán đầy đủ của bạn.
           </Typography>
         </Box>
       </Grid>

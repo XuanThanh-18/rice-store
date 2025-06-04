@@ -35,7 +35,7 @@ const AuthButtons = () => {
           },
         }}
       >
-        Register
+        Đăng ký
       </Button>
     </Box>
   );

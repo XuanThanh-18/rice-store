@@ -86,7 +86,7 @@ const PieChartContainer = ({
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              No data available
+              Dữ liệu không có sẵn
             </Typography>
           </Box>
         ) : (

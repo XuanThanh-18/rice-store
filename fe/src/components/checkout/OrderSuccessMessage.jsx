@@ -53,11 +53,11 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
         />
 
         <Typography variant="h4" gutterBottom fontWeight="bold">
-          Thank you for your order!
+          Cảm ơn bạn đã đặt hàng!
         </Typography>
 
         <Typography variant="h6" sx={{ opacity: 0.9 }}>
-          Your order has been placed successfully.
+          Đơn hàng của bạn đã được đặt thành công.
         </Typography>
 
         {/* Confetti-like decorations */}
@@ -115,7 +115,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <ReceiptIcon sx={{ mr: 1, color: "primary.main" }} />
-                <Typography variant="h6">Order Details</Typography>
+                <Typography variant="h6">Chi tiết đơn hàng</Typography>
               </Box>
 
               <Divider sx={{ my: 2 }} />
@@ -124,7 +124,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
                 <Typography variant="subtitle1" color="text.secondary">
-                  Order Number:
+                  Số đơn hàng:
                 </Typography>
                 <Typography variant="subtitle1" fontWeight="bold">
                   #{orderId}
@@ -135,7 +135,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
                 <Typography variant="subtitle1" color="text.secondary">
-                  Order Date:
+                  Ngày đặt hàng:
                 </Typography>
                 <Typography variant="subtitle1">
                   {new Date().toLocaleDateString()}
@@ -144,9 +144,9 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
 
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="subtitle1" color="text.secondary">
-                  Payment Method:
+                  Phương thức thanh toán:
                 </Typography>
-                <Typography variant="subtitle1">Credit Card</Typography>
+                <Typography variant="subtitle1">Thẻ thanh toán</Typography>
               </Box>
             </Box>
 
@@ -162,7 +162,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <ScheduleIcon sx={{ mr: 1, color: "primary.main" }} />
-                <Typography variant="h6">What's Next?</Typography>
+                <Typography variant="h6">Cái gì tiếp theo</Typography>
               </Box>
 
               <Divider sx={{ my: 2 }} />
@@ -187,11 +187,11 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 </Box>
                 <Box>
                   <Typography variant="subtitle1" fontWeight="medium">
-                    Order Confirmation Email
+                    Email xác nhận đơn hàng
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    You will receive an email confirmation with your order
-                    details.
+                    Bạn sẽ nhận được một email xác nhận với chi tiết đơn hàng
+                    của bạn.
                   </Typography>
                 </Box>
               </Box>
@@ -216,10 +216,11 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 </Box>
                 <Box>
                   <Typography variant="subtitle1" fontWeight="medium">
-                    Order Processing
+                    Xử lý đơn hàng
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    We'll prepare your order and notify you when it ships.
+                    Chúng tôi sẽ chuẩn bị đơn hàng của bạn và thông báo cho bạn
+                    khi nó được giao.
                   </Typography>
                 </Box>
               </Box>
@@ -244,10 +245,10 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 </Box>
                 <Box>
                   <Typography variant="subtitle1" fontWeight="medium">
-                    Delivery
+                    Giao hàng
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Your order will be delivered within 3-5 business days.
+                    Đơn hàng của bạn sẽ được giao trong vòng 3-5 ngày làm việc.
                   </Typography>
                 </Box>
               </Box>
@@ -274,12 +275,12 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                 color="primary.dark"
                 fontWeight="medium"
               >
-                Need to track or manage your order?
+                Cần theo dõi hoặc quản lý đơn hàng của bạn?
               </Typography>
 
               <Typography variant="body2" paragraph color="text.secondary">
-                You can view your order details, track shipment, and manage your
-                purchase from the order details page.
+                Bạn có thể xem chi tiết đơn hàng, theo dõi lô hàng và quản lý
+                việc mua của bạn từ trang chi tiết đơn hàng.
               </Typography>
 
               <Box
@@ -307,7 +308,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                     transition: "all 0.3s",
                   }}
                 >
-                  View Order Details
+                  Xem chi tiết đơn hàng
                 </Button>
 
                 <Button
@@ -317,7 +318,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                   to="/orders"
                   sx={{ fontWeight: "medium" }}
                 >
-                  View All Orders
+                  Xem tất cả đơn hàng
                 </Button>
 
                 <Button
@@ -328,7 +329,7 @@ const OrderSuccessMessage = ({ orderId, onViewDetails }) => {
                   startIcon={<HomeIcon />}
                   sx={{ mt: 1 }}
                 >
-                  Return to Home Page
+                  Trở lại trang chủ
                 </Button>
               </Box>
             </Box>

@@ -20,7 +20,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="text.secondary">
-          Please enter your shipping details
+          Vui lòng nhập thông tin giao hàng của bạn
         </Typography>
       </Grid>
 
@@ -29,7 +29,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
           as={TextField}
           fullWidth
           name="fullName"
-          label="Full Name"
+          label="Họ và tên"
           variant="outlined"
           error={touched.fullName && Boolean(errors.fullName)}
           helperText={touched.fullName && errors.fullName}
@@ -40,7 +40,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
               </InputAdornment>
             ),
           }}
-          placeholder="Enter your full name"
+          placeholder="Nhập đầy đủ họ tên"
         />
       </Grid>
 
@@ -49,7 +49,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
           as={TextField}
           fullWidth
           name="phoneNumber"
-          label="Phone Number"
+          label="Số điện thoại"
           variant="outlined"
           error={touched.phoneNumber && Boolean(errors.phoneNumber)}
           helperText={touched.phoneNumber && errors.phoneNumber}
@@ -60,7 +60,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
               </InputAdornment>
             ),
           }}
-          placeholder="Enter your phone number"
+          placeholder="Nhập số điện thoại"
         />
       </Grid>
 
@@ -71,7 +71,7 @@ const ShippingInfoForm = ({ errors, touched }) => {
           multiline
           rows={4}
           name="shippingAddress"
-          label="Shipping Address"
+          label="Địa chỉ giao hàng"
           variant="outlined"
           error={touched.shippingAddress && Boolean(errors.shippingAddress)}
           helperText={touched.shippingAddress && errors.shippingAddress}
@@ -82,10 +82,10 @@ const ShippingInfoForm = ({ errors, touched }) => {
               </InputAdornment>
             ),
           }}
-          placeholder="Enter your complete shipping address"
+          placeholder="Nhập địa chỉ giao hàng"
         />
         <FormHelperText>
-          Please include street address, city, state, and ZIP code
+          Vui lòng bao gồm địa chỉ đường, thành phố, xã và mã ZIP
         </FormHelperText>
       </Grid>
 
@@ -110,8 +110,8 @@ const ShippingInfoForm = ({ errors, touched }) => {
             }}
           />
           <Typography variant="body2" color="primary.main">
-            Orders typically ship within 1-2 business days. For addresses in
-            rural areas, delivery may take an additional 1-2 days.
+            Đơn hàng thường được giao trong vòng 1-2 ngày làm việc. Đối với các
+            địa chỉ ở vùng nông thôn, việc giao hàng có thể mất thêm 1-2 ngày.
           </Typography>
         </Paper>
       </Grid>

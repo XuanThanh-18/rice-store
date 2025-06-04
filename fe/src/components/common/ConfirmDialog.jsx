@@ -16,10 +16,10 @@ const ConfirmDialog = ({
   open,
   onClose,
   onConfirm,
-  title = "Confirm Action",
-  content = "Are you sure you want to perform this action?",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  title = "Xác nhận hành động",
+  content = "Bạn có chắc chắn muốn thực hiện hành động này không?",
+  confirmText = "Xác nhận",
+  cancelText = "Hủy",
   confirmColor = "primary",
 }) => {
   return (

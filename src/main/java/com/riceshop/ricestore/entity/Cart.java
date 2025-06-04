@@ -42,16 +42,4 @@ public class Cart {
                 .map(CartItem::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
-    public void addItem(CartItem item) {
-        cartItems.add(item);
-        item.setCart(this);
-        recalculateTotal();
-    }
-
-    public void removeItem(CartItem item) {
-        cartItems.remove(item);
-        item.setCart(null);
-        recalculateTotal();
-    }
 }
